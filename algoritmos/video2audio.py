@@ -2,6 +2,7 @@ import pathlib
 import moviepy.editor as mp
 from pytube import YouTube
 import os
+import time
 
 
 
@@ -10,6 +11,7 @@ def convertidor_video(url:str):
         try:
             clip = mp.VideoFileClip(url)
             clip.audio.write_audiofile(actual_path + "/audio.wav")
+            clip.close()
         except Exception as e:
             print("Se ha producido un error: ", e)
 
@@ -37,11 +39,16 @@ def video2audio(url:str) -> None:
     if "youtube" in url:
         url_video = convertidor_youtube(url)
         convertidor_video(url_video)
+        print(url_video)
         try:
             os.remove(url_video)
-            print("El audio se ha descargado correctamente.")
         except Exception as e:
             print("Se ha producido un error: ", e)
 
     elif "youtube" not in url:
         convertidor_video(url)
+
+
+# video2audio("https://www.youtube.com/watch?v=HbrB5Pk_6dw&list=RDHbrB5Pk_6dw&start_radio=1")
+
+# video2audio("C:/Users/Matias Caliz/Desktop/proyecto-final-ingenieria/algoritmos/video_sample.mp4")
