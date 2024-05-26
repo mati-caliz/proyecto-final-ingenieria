@@ -1,0 +1,10 @@
+# pip install -r .\requirements.txt
+numpy==1.26.4
+pandas==2.2.2
+matplotlib==3.9.0
+pytube==15.0.0
+moviepy==1.0.3
+seaborn==0.13.2
+tensorflow==2.16.1
+IPython==8.24.0
+scikit-learn==1.4.2
