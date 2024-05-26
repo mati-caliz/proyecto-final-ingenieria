@@ -1,17 +1,14 @@
-import os 
-import tensorflow as tf 
-import numpy as np 
-import seaborn as sns 
-import pathlib 
-from IPython import display 
-from matplotlib import pyplot as plt 
-from sklearn.metrics import classification_report
+import assemblyai as aai
 
-data = tf.keras.utils.get_file( 
-  'mini_speech_commands.zip', 
-  origin="http://storage.googleapis.com/download.tensorflow.org/data/mini_speech_commands.zip", 
-  extract=True, 
-  cache_dir='.', cache_subdir='data')
+aai.settings.api_key = "ffbcd19f906b4c688060d677d7ff18e9"
 
+FILE_URL = r"C://Users//Matias Caliz//Desktop//proyecto-final-ingenieria//algoritmos//audio.wav"
 
-os.listdir('./data/')
+config = aai.TranscriptionConfig(language_code="es")
+transcriber = aai.Transcriber(config=config)
+transcript = transcriber.transcribe(FILE_URL)
+
+if transcript.status == aai.TranscriptStatus.error:
+    print(transcript.error)
+else:
+    print(transcript.text)
