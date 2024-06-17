@@ -48,6 +48,6 @@ def video2audio(url:str) -> None:
         convertidor_video(url)
 
 
-video2audio("https://www.youtube.com/watch?v=Y66JWtWxCgk")
+video2audio("https://www.youtube.com/watch?v=1JBGHz2UF-o")
 
 #video2audio("C:/Users/Matias Caliz/Desktop/proyecto-final-ingenieria/algoritmos/video_sample.mp4")
