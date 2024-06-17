@@ -1,6 +1,6 @@
 import ollama
 
-def argument_opinion_splitter_ollama(prompt:str):
+def fake_news_clasificator_ollama(prompt:str):
     response = ollama.chat(model='llama3', messages=[
     {
       'role': 'user',
@@ -14,5 +14,5 @@ if __name__ == "__main__":
         user_input = input("You: ")
         if user_input.lower() in ["quit", "exit", "bye"]:
             break
-        response = argument_opinion_splitter_ollama(user_input)
+        response = fake_news_clasificator_ollama(user_input)
         print("Chatbot: ", response)

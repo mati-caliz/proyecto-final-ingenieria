@@ -2,7 +2,7 @@ from openai import OpenAI
 
 client = OpenAI(api_key="sk-proj-ISd2YDCvCl5KLGV8juc9T3BlbkFJJCwEgXlcJuI81GZlVjfg")
 
-def argument_opinion_splitter_gpt4(prompt:str):
+def fake_news_clasificator_gpt4(prompt:str):
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[{"role":"user","content":prompt}]
@@ -14,5 +14,5 @@ if __name__ == "__main__":
         user_input = input("You: ")
         if user_input.lower() in ["quit", "exit", "bye"]:
             break
-        response = argument_opinion_splitter_gpt4(user_input)
+        response = fake_news_clasificator_gpt4(user_input)
         print("Chatbot: ", response)
