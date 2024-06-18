@@ -4,7 +4,6 @@ from pytube import YouTube
 import os
 
 
-
 def convertidor_video(url:str):
         actual_path = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
         try:
@@ -13,7 +12,6 @@ def convertidor_video(url:str):
             clip.close()
         except Exception as e:
             print("Se ha producido un error: ", e)
-
 
 
 def convertidor_youtube(link:str):
@@ -26,7 +24,6 @@ def convertidor_youtube(link:str):
         except Exception as e:
             print("Se ha producido un error: ", e)
         return actual_path + "/temp_video.mp4"
-
 
 
 def video2audio(url:str) -> None:
@@ -48,6 +45,5 @@ def video2audio(url:str) -> None:
         convertidor_video(url)
 
 
-video2audio("https://www.youtube.com/watch?v=1JBGHz2UF-o")
-
-#video2audio("C:/Users/Matias Caliz/Desktop/proyecto-final-ingenieria/algoritmos/video_sample.mp4")
+if __name__ == "__main__":
+    video2audio("https://www.youtube.com/watch?v=xEDCk9pjmDs")
