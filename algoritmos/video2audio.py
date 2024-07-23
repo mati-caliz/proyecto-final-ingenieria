@@ -40,10 +40,10 @@ def video2audio(url:str) -> None:
             os.remove(url_video)
         except Exception as e:
             print("Se ha producido un error: ", e)
-
     elif "youtube" not in url:
         convertidor_video(url)
 
 
 if __name__ == "__main__":
-    video2audio("https://www.youtube.com/watch?v=xEDCk9pjmDs")
+    #video2audio("C://Users//Matias Caliz//Desktop//proyecto-final-ingenieria//algoritmos//Recorder_23062024_150605.mp4")
+    video2audio("https://www.youtube.com/watch?v=D6YsUyvTnEw&t=194s")
