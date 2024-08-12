@@ -1,0 +1,84 @@
+.container {
+    font-family: Arial, sans-serif;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-section,
+.right-section {
+    width: 45%;
+}
+
+.statements p {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.true {
+    color: green;
+}
+
+.misleading {
+    color: orange;
+}
+
+.false {
+    color: red;
+}
+
+.options {
+    text-align: center;
+    align-items: center;
+    display: block;
+    justify-content: center;
+    padding: 0 10px;
+    width: 60%;
+}
+
+.choices {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 20px 0 20px;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.choices label {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.submit {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.submit:hover {
+    background-color: #0056b3;
+}
