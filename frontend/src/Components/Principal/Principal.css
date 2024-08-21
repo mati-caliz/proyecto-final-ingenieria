@@ -73,8 +73,15 @@
     gap: 5px;
 }
 
+#input-container {
+    height: 20vh;
+    width: auto;
+}
+
 #textarea-input {
-    min-width: 300px;
+    height: inherit;
+    min-width: 200px;
+    width: 100%;
 }
 
 .submit {

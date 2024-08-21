@@ -49,8 +49,8 @@ const Principal = () => {
             </label>
           </div>
           &nbsp;
-          <div>
-            <textarea id={"textarea-input"}>Text</textarea>
+          <div id={"input-container"}>
+            <textarea id={"textarea-input"} placeholder={"Escriba aquí el texto a analizar"}></textarea>
           </div>
           <button className="submit">Enviar</button>
         </div>
