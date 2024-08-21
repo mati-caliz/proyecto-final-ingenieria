@@ -1,15 +1,10 @@
 import React from "react";
 import "./Principal.css";
 import Card from "../Card/Card.jsx";
-import Navbar from "../NavBar/Navbar";
 
 const Principal = () => {
   return (
     <div className="container">
-      <header className="header">
-        <Navbar />
-        <h1>Argucheck</h1>
-      </header>
       <div className="content">
         <div className="left-section">
           <Card
@@ -55,7 +50,7 @@ const Principal = () => {
           </div>
           &nbsp;
           <div>
-            <textarea classname="placeholder">Text</textarea>
+            <textarea id={"textarea-input"}>Text</textarea>
           </div>
           <button className="submit">Enviar</button>
         </div>
