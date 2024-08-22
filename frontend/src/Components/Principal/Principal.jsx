@@ -148,6 +148,7 @@ const Principal = () => {
             )}
             {selectedOption === "youtube" && (
               <input
+                id={"youtube-input"}
                 type="text"
                 placeholder={"Ingrese la URL de YouTube"}
                 value={inputValue}
