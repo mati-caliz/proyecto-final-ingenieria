@@ -84,6 +84,11 @@
     width: 100%;
 }
 
+.error {
+    color: red;
+    margin-top: 20px;
+}
+
 .submit {
     margin-top: 20px;
     padding: 10px 20px;
@@ -97,4 +102,15 @@
 
 .submit:hover {
     background-color: #0056b3;
+}
+
+.submit.disabled {
+    background-color: gray;
+    cursor: not-allowed;
+}
+
+.processing-message {
+    color: #333;
+    margin-top: 10px;
+    font-size: 14px;
 }
