@@ -79,7 +79,7 @@ const Principal = () => {
           />
           <Card
             text={"Tuvimos un retroceso de casi 20 años en pocos meses. Los salarios volvieron a niveles de abril de 2006"}
-            result={"ENGAÑOSO"}
+            result={"POLÉMICO"}
           />
           <Card
             text={"En el mundo todos los clubes son sociedades con capitales privados: Bayern Múnich, Real Madrid, Barcelona y PSG"}
@@ -173,11 +173,11 @@ const Principal = () => {
         <div className="right-section">
           <Card
             text={"Desde que asumimos las jubilaciones subieron 4% en términos reales"}
-            result={"ENGAÑOSO"}
+            result={"POLÉMICO"}
           />
           <Card
             text={"La delegación de los juegos olímpicos es la cuarta más importante en cuanto atletas de Argentina"}
-            result={"EXAGERADO"}
+            result={"POLÉMICO"}
           />
           <Card
             text={"En los últimos 15 años fuimos el país que menos creció en latinoamérica"}
