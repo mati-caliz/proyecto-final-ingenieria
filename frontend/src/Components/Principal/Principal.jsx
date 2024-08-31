@@ -73,20 +73,28 @@ const Principal = () => {
     <div className="container">
       <div className="content">
         <div className="left-section">
+          <h2 className="h2-arriba-cards">Análisis Anteriores</h2>
           <Card
-            text={"En los últimos 15 años, fuimos el país que menos creció en Latinoamérica"}
+            text={
+              "En los últimos 15 años, fuimos el país que menos creció en Latinoamérica"
+            }
             result={"VERDADERO"}
           />
           <Card
-            text={"Tuvimos un retroceso de casi 20 años en pocos meses. Los salarios volvieron a niveles de abril de 2006"}
+            text={
+              "Tuvimos un retroceso de casi 20 años en pocos meses. Los salarios volvieron a niveles de abril de 2006"
+            }
             result={"POLÉMICO"}
           />
           <Card
-            text={"En el mundo todos los clubes son sociedades con capitales privados: Bayern Múnich, Real Madrid, Barcelona y PSG"}
+            text={
+              "En el mundo todos los clubes son sociedades con capitales privados: Bayern Múnich, Real Madrid, Barcelona y PSG"
+            }
             result={"FALSO"}
           />
         </div>
         <div className="options">
+          <h2 className="arriba-titulo-central">Ingrese el archivo o texto que quiere analizar</h2>
           <div className="choices">
             <label>
               <input
@@ -166,21 +174,29 @@ const Principal = () => {
           </button>
           {isSubmitting && (
             <p className="processing-message">
-              Estamos procesando la información enviada. Por favor, espere hasta que el análisis sea realizado.
+              Estamos procesando la información enviada. Por favor, espere hasta
+              que el análisis sea realizado.
             </p>
           )}
         </div>
         <div className="right-section">
+          <h2 className="h2-arriba-cards">Análisis Anteriores</h2>
           <Card
-            text={"Desde que asumimos las jubilaciones subieron 4% en términos reales"}
+            text={
+              "Desde que asumimos las jubilaciones subieron 4% en términos reales"
+            }
             result={"POLÉMICO"}
           />
           <Card
-            text={"La delegación de los juegos olímpicos es la cuarta más importante en cuanto atletas de Argentina"}
+            text={
+              "La delegación de los juegos olímpicos es la cuarta más importante en cuanto atletas de Argentina"
+            }
             result={"POLÉMICO"}
           />
           <Card
-            text={"En los últimos 15 años fuimos el país que menos creció en latinoamérica"}
+            text={
+              "En los últimos 15 años fuimos el país que menos creció en latinoamérica"
+            }
             result={"VERDADERO"}
           />
         </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from '../Assets/logo.jpeg'
+import logo from '../Assets/logo.png'
 import userIcon from "../Assets/userIcon.png";
 import "./Navbar.css";
 
@@ -18,7 +18,6 @@ const Navbar = () => {
           alt="Logo"
           className="navbar-logo"
         />
-        <span className="navbar-title">Argucheck</span>
       </div>
       <div className="navbar-right">
         <div className="dropdown">
