@@ -94,7 +94,9 @@ const Principal = () => {
           />
         </div>
         <div className="options">
-          <h2 className="arriba-titulo-central">Ingrese el archivo o texto que quiere analizar</h2>
+          <h2 className="arriba-titulo-central">
+            Ingrese el archivo o texto que quiere analizar
+          </h2>
           <div className="choices">
             <label>
               <input
@@ -138,10 +140,11 @@ const Principal = () => {
             </label>
           </div>
           &nbsp;
-          <div id={"input-container"}>
+          <div className="input-container">
             {selectedOption === "text" && (
               <textarea
                 id={"textarea-input"}
+                className="prueba"
                 placeholder={"Escriba aquí el texto a analizar"}
                 value={inputValue}
                 onChange={handleInputChange}
@@ -150,6 +153,7 @@ const Principal = () => {
             {(selectedOption === "audio" || selectedOption === "video") && (
               <input
                 type="file"
+                id={"file-input"}
                 accept={selectedOption === "audio" ? ".mp3,.wav" : ".mp4,.avi"}
                 onChange={handleInputChange}
               />

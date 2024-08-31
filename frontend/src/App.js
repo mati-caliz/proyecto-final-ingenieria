@@ -9,10 +9,7 @@ import React from 'react';
 function App() {
   return (
     <div>
-      <header className="header">
         <Navbar />
-        <h1>Argucheck</h1>
-      </header>
       <Principal />
     </div>
   );
