@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Principal.css";
 import Card from "../Card/Card.jsx";
+import backgroundImage from "../Assets/background.png";
 
 const Principal = () => {
   const [selectedOption, setSelectedOption] = useState("text");
@@ -25,10 +26,20 @@ const Principal = () => {
       const validAudioTypes = [".mp3", ".wav"];
       const validVideoTypes = [".mp4", ".avi"];
 
-      if (selectedOption === "audio" && !validAudioTypes.includes(selectedFile.name.slice(-4).toLowerCase())) {
-        setError("Formato de archivo de audio no válido. Solo se permiten .mp3 y .wav.");
-      } else if (selectedOption === "video" && !validVideoTypes.includes(selectedFile.name.slice(-4).toLowerCase())) {
-        setError("Formato de archivo de video no válido. Solo se permiten .mp4 y .avi.");
+      if (
+        selectedOption === "audio" &&
+        !validAudioTypes.includes(selectedFile.name.slice(-4).toLowerCase())
+      ) {
+        setError(
+          "Formato de archivo de audio no válido. Solo se permiten .mp3 y .wav."
+        );
+      } else if (
+        selectedOption === "video" &&
+        !validVideoTypes.includes(selectedFile.name.slice(-4).toLowerCase())
+      ) {
+        setError(
+          "Formato de archivo de video no válido. Solo se permiten .mp4 y .avi."
+        );
       } else {
         setFile(selectedFile);
       }
@@ -48,7 +59,9 @@ const Principal = () => {
         return;
       }
       if (selectedOption === "youtube" && !validateYouTubeUrl(inputValue)) {
-        setError("La URL proporcionada no es válida. Asegúrese de que sea una URL de YouTube.");
+        setError(
+          "La URL proporcionada no es válida. Asegúrese de que sea una URL de YouTube."
+        );
         return;
       }
       console.log(`Input Value: ${inputValue}`);
@@ -95,7 +108,7 @@ const Principal = () => {
         </div>
         <div className="options">
           <h2 className="arriba-titulo-central">
-            Ingrese el archivo o texto que quiere analizar
+            Ingrese el Archivo o Texto para Analizar
           </h2>
           <div className="choices">
             <label>
@@ -139,7 +152,6 @@ const Principal = () => {
               Youtube
             </label>
           </div>
-          &nbsp;
           <div className="input-container">
             {selectedOption === "text" && (
               <textarea
