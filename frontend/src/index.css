@@ -11,6 +11,7 @@ body {
   padding: 0;
   font-family: Arial, sans-serif;
   background-size: cover;
+  background-image: url('../src/Components/Assets/background.png');
   background-position-y: center;
   background-position: center;
   width: 100%;
