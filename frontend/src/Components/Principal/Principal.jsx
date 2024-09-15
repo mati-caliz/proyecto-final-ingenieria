@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Principal.css";
 import Card from "../Card/Card.jsx";
 import backgroundImage from "../Assets/background.png";
+import Navbar from "../NavBar/Navbar";
 
 const Principal = () => {
   const [selectedOption, setSelectedOption] = useState("text");
@@ -83,6 +84,8 @@ const Principal = () => {
   };
 
   return (
+  <div>
+    <Navbar />
     <div className="container">
       <div className="content">
         <div className="left-section">
@@ -218,6 +221,7 @@ const Principal = () => {
         </div>
       </div>
     </div>
+  </div>
   );
 };
 

@@ -30,14 +30,8 @@ const Navbar = () => {
           </button>
           {dropdownOpen && (
             <div className="dropdown-menu">
-              <a href="#profile" className="dropdown-item">
-                Profile
-              </a>
-              <a href="#settings" className="dropdown-item">
-                Settings
-              </a>
               <a href="#logout" className="dropdown-item">
-                Logout
+                Cerrar Sesión
               </a>
             </div>
           )}
