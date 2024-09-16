@@ -1,7 +1,7 @@
 import React from "react";
 import "./Argumentos.css";
-import Card from "../Card/Card.jsx";
-import Navbar from "../NavBar/Navbar";
+import Card from "../cards/Card.jsx";
+import Navbar from "../navBar/Navbar";
 
 const Argumentos = () => {
   return (

@@ -5,7 +5,6 @@ const Card = ({ text, result }) => {
   return (
     <div className="fact-check-card">
       <p>{text}</p>
-      &nbsp;
       <p className={`result ${result.toLowerCase()}`}>{result.toUpperCase()}</p>
     </div>
   );

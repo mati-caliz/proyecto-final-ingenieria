@@ -1,5 +1,5 @@
 .wrapper {
-    background: url('../Assets/background.jpg') no-repeat;
+    background: url('../assets/background.jpg') no-repeat;
     background-size: cover;
     min-height: 100vh;
     display: flex;

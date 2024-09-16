@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import Login from './Components/Login/Login';
-import ArgumentAnalysis from './Components/SecondPage/ArgumentAnalysis';
-import Principal from './Components/Principal/Principal';
+import Login from './Components/login/Login';
+import ArgumentAnalysis from './Components/resultsViewer/ArgumentAnalysis';
+import Principal from './Components/main/Principal';
 
 function App() {
     return (
