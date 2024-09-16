@@ -1,5 +1,6 @@
 import React from 'react';
 import './ArgumentAnalysis.css';
+import Navbar from "../navBar/Navbar";
 
 const argumentsData = [
     {
@@ -21,17 +22,20 @@ const argumentsData = [
 
 const ArgumentAnalysis = () => {
     return (
-        <div className="container">
-            <h1>Chequeo de datos</h1>
-            {argumentsData.map((item, index) => (
-                <div key={index} className="argument-block">
-                    <h2>{index + 1}) {item.statement}</h2>
-                    <p className="analysis">{item.analysis}</p>
-                    <span className={`conclusion ${item.conclusion.toLowerCase()}`}>
-            {item.conclusion}
-          </span>
-                </div>
-            ))}
+        <div>
+            <Navbar />
+            <div className="container">
+                <h1>Chequeo de datos</h1>
+                {argumentsData.map((item, index) => (
+                    <div key={index} className="argument-block">
+                        <h2>{index + 1}) {item.statement}</h2>
+                        <p className="analysis">{item.analysis}</p>
+                        <span className={`conclusion ${item.conclusion.toLowerCase()}`}>
+                {item.conclusion}
+              </span>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
