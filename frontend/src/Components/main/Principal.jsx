@@ -3,6 +3,7 @@ import "./Principal.css";
 import Card from "../cards/Card.jsx";
 import Navbar from "../navBar/Navbar";
 import { useNavigate } from 'react-router-dom';
+import {useTextAnalysisMutation} from '../../redux/redux/features/analyses/analysisApiSlice';
 
 const Principal = () => {
   const [inputType, setInputType] = useState("text");
@@ -10,6 +11,7 @@ const Principal = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [requestTextAnalysis, { data }] = useTextAnalysisMutation()
   const navigate = useNavigate();
 
   const handleOptionChange = (event) => {
@@ -53,7 +55,7 @@ const Principal = () => {
     return pattern.test(url);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setErrorMessage("");
     if ((inputType === "text" || inputType === "youtube") && inputValue.trim() === "") {
       setErrorMessage("El campo de texto no puede estar vacío.");
@@ -72,11 +74,35 @@ const Principal = () => {
 
     setIsSubmitting(true);
 
-    // Simula el procesamiento y luego redirige
-    setTimeout(() => {
+    // // Simula el procesamiento y luego redirige
+    // setTimeout(() => {
+    //   setIsSubmitting(false);
+    //   navigate('/argument-analysis');  // Redirige a la página de análisis de argumentos
+    // }, 1000);
+
+    try {
+      let result = null;
+
+      switch (inputType) {
+        case "text":
+          result = await requestTextAnalysis({ text: inputValue });
+          console.log('Text analysis result: ', result);
+          break;
+        default:
+          console.error('Unexpected input type: ', inputType);
+          break;
+      }
+
       setIsSubmitting(false);
-      navigate('/argument-analysis');  // Redirige a la página de análisis de argumentos
-    }, 1000);
+      if (result) {
+
+        console.log('Pasando a ArgumentAnalysis: ', result)
+
+        navigate('/argument-analysis', { state: { analysisData: result.data.analysis } });
+      }
+    } catch (e) {
+      console.error(`Error requesting analysis of type ${inputType}: `, e);
+    }
   };
 
   return (

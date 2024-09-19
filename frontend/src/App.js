@@ -14,8 +14,9 @@ function App() {
   });
 
   useEffect(() => {
-    if (token) {
-      // Redirigir a /principal si hay un token
+    const currentPath = window.location.pathname;
+
+    if (token && currentPath === '/') {
       navigate('/principal');
     }
   }, [token, navigate]);

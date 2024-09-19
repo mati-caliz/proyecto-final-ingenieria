@@ -1,5 +1,8 @@
 const ApiConstants = {
     baseUrl: process.env.NODE_ENV === 'production' ? 'TODO AWS url' : 'http://localhost:8000/',
+    analysisUrls: {
+        text: 'analyses/text',
+    },
     userUrls: {
         root: 'users',
         login: 'users/login',
