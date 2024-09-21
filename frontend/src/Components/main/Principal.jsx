@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import "./Principal.css";
 import Card from "../cards/Card.jsx";
 import Navbar from "../navBar/Navbar";
 import { useNavigate } from 'react-router-dom';
-import {useTextAnalysisMutation} from '../../redux/redux/features/analyses/analysisApiSlice';
+import {
+  useGetPreviousAnalysesMutation,
+  useTextAnalysisMutation,
+} from '../../redux/redux/features/analyses/analysisApiSlice';
 
 const Principal = () => {
   const [inputType, setInputType] = useState("text");
@@ -11,8 +14,29 @@ const Principal = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [getPreviousAnalyses] = useGetPreviousAnalysesMutation()
   const [requestTextAnalysis, { data }] = useTextAnalysisMutation()
+  const [previousAnalyses, setPreviousAnalyses] = useState([]);
+  const [loadingPreviousAnalyses, setLoadingPreviousAnalyses] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAnalyses = async () => {
+      try {
+        const response = await getPreviousAnalyses();
+
+        console.log('Response de analisis viejos: ', response.data)
+
+        setPreviousAnalyses(response.data);
+      } catch (error) {
+        console.error("Error fetching analyses:", error);
+      } finally {
+        setLoadingPreviousAnalyses(false);
+      }
+    };
+
+    fetchAnalyses();
+  }, []); // Cargar al inicio
 
   const handleOptionChange = (event) => {
     setInputType(event.target.value);
@@ -74,12 +98,6 @@ const Principal = () => {
 
     setIsSubmitting(true);
 
-    // // Simula el procesamiento y luego redirige
-    // setTimeout(() => {
-    //   setIsSubmitting(false);
-    //   navigate('/argument-analysis');  // Redirige a la página de análisis de argumentos
-    // }, 1000);
-
     try {
       let result = null;
 
@@ -106,144 +124,117 @@ const Principal = () => {
   };
 
   return (
-      <div>
-        <Navbar />
-        <div className="container">
-          <div className="content">
-            <div className="left-section">
-              <h2 className="section-title">Análisis Anteriores</h2>
-              <Card
-                  text={
-                    "En los últimos 15 años, fuimos el país que menos creció en Latinoamérica"
-                  }
-                  result={"VERDADERO"}
-              />
-              <Card
-                  text={
-                    "Tuvimos un retroceso de casi 20 años en pocos meses. Los salarios volvieron a niveles de abril de 2006"
-                  }
-                  result={"POLÉMICO"}
-              />
-              <Card
-                  text={
-                    "En el mundo todos los clubes son sociedades con capitales privados: Bayern Múnich, Real Madrid, Barcelona y PSG"
-                  }
-                  result={"FALSO"}
-              />
+    <div>
+      <Navbar />
+      <div className="container">
+        <div className="content">
+          <div className="left-section">
+            <h2 className="section-title">Análisis Anteriores</h2>
+            {loadingPreviousAnalyses ? (
+              <p>Cargando...</p>
+            ) : (
+              previousAnalyses.length > 0 ? (
+                previousAnalyses.map((analysis, index) => (
+                  <Card key={index} text={JSON.parse(analysis.analysis)['title']} />
+                ))
+              ) : (
+                <p>No hay análisis disponibles.</p>
+              )
+            )}
+          </div>
+          <div className="options">
+            <h2 className="central-title">Ingrese un archivo o texto</h2>
+            <div className="choices">
+              <label>
+                <input
+                  type="radio"
+                  name="format"
+                  value="text"
+                  checked={inputType === "text"}
+                  onChange={handleOptionChange}
+                />
+                Texto
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="format"
+                  value="audio"
+                  checked={inputType === "audio"}
+                  onChange={handleOptionChange}
+                />
+                Audio
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="format"
+                  value="video"
+                  checked={inputType === "video"}
+                  onChange={handleOptionChange}
+                />
+                Video
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="format"
+                  value="youtube"
+                  checked={inputType === "youtube"}
+                  onChange={handleOptionChange}
+                />
+                Youtube
+              </label>
             </div>
-            <div className="options">
-              <h2 className="central-title">
-                Ingrese un archivo o texto
-              </h2>
-              <div className="choices">
-                <label>
-                  <input
-                      type="radio"
-                      name="format"
-                      value="text"
-                      checked={inputType === "text"}
-                      onChange={handleOptionChange}
-                  />
-                  Texto
-                </label>
-                <label>
-                  <input
-                      type="radio"
-                      name="format"
-                      value="audio"
-                      checked={inputType === "audio"}
-                      onChange={handleOptionChange}
-                  />
-                  Audio
-                </label>
-                <label>
-                  <input
-                      type="radio"
-                      name="format"
-                      value="video"
-                      checked={inputType === "video"}
-                      onChange={handleOptionChange}
-                  />
-                  Video
-                </label>
-                <label>
-                  <input
-                      type="radio"
-                      name="format"
-                      value="youtube"
-                      checked={inputType === "youtube"}
-                      onChange={handleOptionChange}
-                  />
-                  Youtube
-                </label>
-              </div>
-              <div className="input-container">
-                {inputType === "text" && (
-                    <textarea
-                        id={"textarea-input"}
-                        className="textarea-input"
-                        placeholder={"Escriba aquí el texto a analizar"}
-                        value={inputValue}
-                        onChange={handleInputChange}
-                    ></textarea>
-                )}
-                {(inputType === "audio" || inputType === "video") && (
-                    <input
-                        type="file"
-                        id={"file-input"}
-                        accept={inputType === "audio" ? ".mp3,.wav" : ".mp4,.avi"}
-                        onChange={handleInputChange}
-                    />
-                )}
-                {inputType === "youtube" && (
-                    <input
-                        id={"youtube-input"}
-                        type="text"
-                        placeholder={"Ingrese la URL de YouTube"}
-                        value={inputValue}
-                        onChange={handleInputChange}
-                    />
-                )}
-              </div>
-              {errorMessage && <p className="error">{errorMessage}</p>}
-              <button
-                  className={`submit ${isSubmitting ? "disabled" : ""}`}
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-              >
-                {isSubmitting ? "Enviando..." : "Enviar"}
-              </button>
-              {isSubmitting && (
-                  <p className="processing-message">
-                    Estamos procesando la información enviada. Por favor, espere hasta
-                    que el análisis sea realizado.
-                  </p>
+            <div className="input-container">
+              {inputType === "text" && (
+                <textarea
+                  id={"textarea-input"}
+                  className="textarea-input"
+                  placeholder={"Escriba aquí el texto a analizar"}
+                  value={inputValue}
+                  onChange={handleInputChange}
+                ></textarea>
+              )}
+              {(inputType === "audio" || inputType === "video") && (
+                <input
+                  type="file"
+                  id={"file-input"}
+                  accept={inputType === "audio" ? ".mp3,.wav" : ".mp4,.avi"}
+                  onChange={handleInputChange}
+                />
+              )}
+              {inputType === "youtube" && (
+                <input
+                  id={"youtube-input"}
+                  type="text"
+                  placeholder={"Ingrese la URL de YouTube"}
+                  value={inputValue}
+                  onChange={handleInputChange}
+                />
               )}
             </div>
-            <div className="right-section">
-              <h2 className="section-title">Análisis Anteriores</h2>
-              <Card
-                  text={
-                    "Desde que asumimos las jubilaciones subieron 4% en términos reales"
-                  }
-                  result={"POLÉMICO"}
-              />
-              <Card
-                  text={
-                    "La delegación de los juegos olímpicos es la cuarta más importante en cuanto atletas de Argentina"
-                  }
-                  result={"POLÉMICO"}
-              />
-              <Card
-                  text={
-                    "En los últimos 15 años fuimos el país que menos creció en latinoamérica"
-                  }
-                  result={"VERDADERO"}
-              />
-            </div>
+            {errorMessage && <p className="error">{errorMessage}</p>}
+            <button
+              className={`submit ${isSubmitting ? "disabled" : ""}`}
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Enviando..." : "Enviar"}
+            </button>
+            {isSubmitting && (
+              <p className="processing-message">
+                Estamos procesando la información enviada. Por favor, espere hasta que el análisis sea realizado.
+              </p>
+            )}
+          </div>
+          <div className="right-section">
+            <h2 className="section-title">Análisis Anteriores</h2>
+            {/* Replicar la lógica de la izquierda si es necesario */}
           </div>
         </div>
       </div>
+    </div>
   );
 };
 

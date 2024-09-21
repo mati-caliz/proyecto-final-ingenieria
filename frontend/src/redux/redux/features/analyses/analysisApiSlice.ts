@@ -18,6 +18,14 @@ export const analysisApiSlice = createApi({
     },
   }),
   endpoints: (builder)=> ({
+    getPreviousAnalyses: builder.mutation({
+      query: () => {
+        return {
+          url: ApiConstants.analysisUrls.getPreviousAnalyses,
+          method: 'GET',
+        }
+      }
+    }),
     textAnalysis: builder.mutation({
       query: (body: TextAnalysisRequest) => {
         console.log('Body received: ', body)
@@ -31,4 +39,4 @@ export const analysisApiSlice = createApi({
   })
 })
 
-export const { useTextAnalysisMutation } = analysisApiSlice;
+export const { useGetPreviousAnalysesMutation, useTextAnalysisMutation } = analysisApiSlice;

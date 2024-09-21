@@ -13,6 +13,9 @@ const ArgumentAnalysis = () => {
 
   try {
     parsedData = JSON.parse(analysisData) as AnalysisResponse;
+    parsedData.analysis.map((item: Analysis, index: number) => {
+      console.log(`item ${index}: `, item)
+    });
   } catch (error) {
     console.error("Error al parsear el JSON:", error);
   }
@@ -28,7 +31,7 @@ const ArgumentAnalysis = () => {
               <div key={index} className="argument-block">
                 <h2>{item.affirmation}</h2>
                 <p className="analysis">{item.analysis}</p>
-                <span className={`conclusion ${item.veredict.toLowerCase()}`}>
+                <span className={`conclusion ${item.veredict?.toLowerCase()}`}>
                   {item.veredict}
                 </span>
               </div>
