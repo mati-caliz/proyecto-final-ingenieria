@@ -183,3 +183,9 @@
     margin-top: 10px;
     font-size: 14px;
 }
+
+.anchor-like {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}

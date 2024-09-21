@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import "./Principal.css";
 import Card from "../cards/Card.jsx";
 import Navbar from "../navBar/Navbar";
@@ -14,8 +14,8 @@ const Principal = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [getPreviousAnalyses] = useGetPreviousAnalysesMutation()
-  const [requestTextAnalysis, { data }] = useTextAnalysisMutation()
+  const [getPreviousAnalyses] = useGetPreviousAnalysesMutation();
+  const [requestTextAnalysis] = useTextAnalysisMutation();
   const [previousAnalyses, setPreviousAnalyses] = useState([]);
   const [loadingPreviousAnalyses, setLoadingPreviousAnalyses] = useState(true);
   const navigate = useNavigate();
@@ -24,9 +24,7 @@ const Principal = () => {
     const fetchAnalyses = async () => {
       try {
         const response = await getPreviousAnalyses();
-
-        console.log('Response de analisis viejos: ', response.data)
-
+        console.log('Response de análisis viejos: ', response.data);
         setPreviousAnalyses(response.data);
       } catch (error) {
         console.error("Error fetching analyses:", error);
@@ -53,21 +51,16 @@ const Principal = () => {
       const selectedFile = event.target.files[0];
       const validAudioTypes = [".mp3", ".wav"];
       const validVideoTypes = [".mp4", ".avi"];
-
       if (
-          inputType === "audio" &&
-          !validAudioTypes.includes(selectedFile.name.slice(-4).toLowerCase())
+        inputType === "audio" &&
+        !validAudioTypes.includes(selectedFile.name.slice(-4).toLowerCase())
       ) {
-        setErrorMessage(
-            "Formato de archivo de audio no válido. Solo se permiten .mp3 y .wav."
-        );
+        setErrorMessage("Formato de archivo de audio no válido. Solo se permiten .mp3 y .wav.");
       } else if (
-          inputType === "video" &&
-          !validVideoTypes.includes(selectedFile.name.slice(-4).toLowerCase())
+        inputType === "video" &&
+        !validVideoTypes.includes(selectedFile.name.slice(-4).toLowerCase())
       ) {
-        setErrorMessage(
-            "Formato de archivo de video no válido. Solo se permiten .mp4 y .avi."
-        );
+        setErrorMessage("Formato de archivo de video no válido. Solo se permiten .mp4 y .avi.");
       } else {
         setSelectedFile(selectedFile);
       }
@@ -86,9 +79,7 @@ const Principal = () => {
       return;
     }
     if (inputType === "youtube" && !validateYouTubeUrl(inputValue)) {
-      setErrorMessage(
-          "La URL proporcionada no es válida. Asegúrese de que sea una URL de YouTube."
-      );
+      setErrorMessage("La URL proporcionada no es válida. Asegúrese de que sea una URL de YouTube.");
       return;
     }
     if (inputType === "file" && !selectedFile) {
@@ -123,6 +114,20 @@ const Principal = () => {
     }
   };
 
+  const handleCardClick = (analysis) => {
+    navigate('/argument-analysis', { state: { analysisData: analysis.analysis } });
+  };
+
+  const splitAnalyses = () => {
+    const middleIndex = Math.ceil(previousAnalyses.length / 2);
+    return {
+      left: previousAnalyses.slice(0, middleIndex),
+      right: previousAnalyses.slice(middleIndex),
+    };
+  };
+
+  const { left, right } = splitAnalyses();
+
   return (
     <div>
       <Navbar />
@@ -133,9 +138,12 @@ const Principal = () => {
             {loadingPreviousAnalyses ? (
               <p>Cargando...</p>
             ) : (
-              previousAnalyses.length > 0 ? (
-                previousAnalyses.map((analysis, index) => (
-                  <Card key={index} text={JSON.parse(analysis.analysis)['title']} />
+              left.length > 0 ? (
+                left.map((analysis, index) => (
+                  <Card
+                    key={index}
+                    text={<a className='anchor-like' onClick={() => handleCardClick(analysis)}>{JSON.parse(analysis.analysis)['title']}</a>}
+                  />
                 ))
               ) : (
                 <p>No hay análisis disponibles.</p>
@@ -230,7 +238,20 @@ const Principal = () => {
           </div>
           <div className="right-section">
             <h2 className="section-title">Análisis Anteriores</h2>
-            {/* Replicar la lógica de la izquierda si es necesario */}
+            {loadingPreviousAnalyses ? (
+              <p>Cargando...</p>
+            ) : (
+              right.length > 0 ? (
+                right.map((analysis, index) => (
+                  <Card
+                    key={index}
+                    text={<a className='anchor-like' onClick={() => handleCardClick(analysis)}>{JSON.parse(analysis.analysis)['title']}</a>}
+                  />
+                ))
+              ) : (
+                <p>No hay análisis disponibles.</p>
+              )
+            )}
           </div>
         </div>
       </div>
