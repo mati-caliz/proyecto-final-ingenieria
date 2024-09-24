@@ -25,6 +25,9 @@ const Principal = () => {
       try {
         const response = await getPreviousAnalyses();
         console.log('Response de análisis viejos: ', response.data);
+        if (!response.data) {
+          throw new Error('Response is undefined');
+        }
         setPreviousAnalyses(response.data);
       } catch (error) {
         console.error("Error fetching analyses:", error);
@@ -146,7 +149,7 @@ const Principal = () => {
                   />
                 ))
               ) : (
-                <p>No hay análisis disponibles.</p>
+                <p className="no-analyses-available">No hay análisis disponibles.</p>
               )
             )}
           </div>
@@ -249,7 +252,7 @@ const Principal = () => {
                   />
                 ))
               ) : (
-                <p>No hay análisis disponibles.</p>
+                <p className="no-analyses-available">No hay análisis disponibles.</p>
               )
             )}
           </div>

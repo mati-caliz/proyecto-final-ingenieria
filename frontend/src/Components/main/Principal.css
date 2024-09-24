@@ -189,3 +189,7 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+.no-analyses-available {
+    text-align: center;
+}
