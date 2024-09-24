@@ -26,6 +26,15 @@ export const analysisApiSlice = createApi({
         }
       }
     }),
+    audioAnalysis: builder.mutation({
+      query: (formData: FormData) => {
+        return {
+          url: ApiConstants.analysisUrls.audio,
+          method: 'POST',
+          body: formData
+        }
+      }
+    }),
     textAnalysis: builder.mutation({
       query: (body: TextAnalysisRequest) => {
         console.log('Body received: ', body)
@@ -39,4 +48,8 @@ export const analysisApiSlice = createApi({
   })
 })
 
-export const { useGetPreviousAnalysesMutation, useTextAnalysisMutation } = analysisApiSlice;
+export const {
+  useAudioAnalysisMutation,
+  useGetPreviousAnalysesMutation,
+  useTextAnalysisMutation,
+} = analysisApiSlice;

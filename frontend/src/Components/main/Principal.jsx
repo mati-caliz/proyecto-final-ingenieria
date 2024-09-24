@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   useGetPreviousAnalysesMutation,
   useTextAnalysisMutation,
+  useAudioAnalysisMutation // <-- Importar el nuevo hook
 } from '../../redux/redux/features/analyses/analysisApiSlice';
 
 const Principal = () => {
@@ -16,6 +17,7 @@ const Principal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [getPreviousAnalyses] = useGetPreviousAnalysesMutation();
   const [requestTextAnalysis] = useTextAnalysisMutation();
+  const [requestAudioAnalysis] = useAudioAnalysisMutation(); // <-- Hook de análisis de audio
   const [previousAnalyses, setPreviousAnalyses] = useState([]);
   const [loadingPreviousAnalyses, setLoadingPreviousAnalyses] = useState(true);
   const navigate = useNavigate();
@@ -100,6 +102,12 @@ const Principal = () => {
           result = await requestTextAnalysis({ text: inputValue });
           console.log('Text analysis result: ', result);
           break;
+        case "audio":
+          const formData = new FormData();
+          formData.append('audio_file', selectedFile); // Agregar el archivo seleccionado al FormData
+          result = await requestAudioAnalysis(formData);
+          console.log('Audio analysis result: ', result);
+          break;
         default:
           console.error('Unexpected input type: ', inputType);
           break;
@@ -114,6 +122,8 @@ const Principal = () => {
       }
     } catch (e) {
       console.error(`Error requesting analysis of type ${inputType}: `, e);
+      setErrorMessage("Error durante el envío. Por favor, intente nuevamente.");
+      setIsSubmitting(false);
     }
   };
 
