@@ -4,6 +4,7 @@ const ApiConstants = {
         audio: 'analyses/audio',
         getPreviousAnalyses: 'analyses/latest',
         text: 'analyses/text',
+        video: 'analyses/video',
     },
     userUrls: {
         root: 'users',

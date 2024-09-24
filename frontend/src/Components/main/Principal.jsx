@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import {
   useGetPreviousAnalysesMutation,
   useTextAnalysisMutation,
-  useAudioAnalysisMutation // <-- Importar el nuevo hook
+  useAudioAnalysisMutation,
+  useVideoAnalysisMutation,
 } from '../../redux/redux/features/analyses/analysisApiSlice';
 
 const Principal = () => {
@@ -17,7 +18,8 @@ const Principal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [getPreviousAnalyses] = useGetPreviousAnalysesMutation();
   const [requestTextAnalysis] = useTextAnalysisMutation();
-  const [requestAudioAnalysis] = useAudioAnalysisMutation(); // <-- Hook de análisis de audio
+  const [requestAudioAnalysis] = useAudioAnalysisMutation();
+  const [requestVideoAnalysis] = useVideoAnalysisMutation();
   const [previousAnalyses, setPreviousAnalyses] = useState([]);
   const [loadingPreviousAnalyses, setLoadingPreviousAnalyses] = useState(true);
   const navigate = useNavigate();
@@ -39,7 +41,7 @@ const Principal = () => {
     };
 
     fetchAnalyses();
-  }, []); // Cargar al inicio
+  }, []);
 
   const handleOptionChange = (event) => {
     setInputType(event.target.value);
@@ -103,10 +105,16 @@ const Principal = () => {
           console.log('Text analysis result: ', result);
           break;
         case "audio":
-          const formData = new FormData();
-          formData.append('audio_file', selectedFile); // Agregar el archivo seleccionado al FormData
-          result = await requestAudioAnalysis(formData);
+          const audioFormData = new FormData();
+          audioFormData.append('audio_file', selectedFile);
+          result = await requestAudioAnalysis(audioFormData);
           console.log('Audio analysis result: ', result);
+          break;
+        case "video":
+          const videoFormData = new FormData();
+          videoFormData.append('video_file', selectedFile);
+          result = await requestVideoAnalysis(videoFormData);
+          console.log('Video analysis result: ', result);
           break;
         default:
           console.error('Unexpected input type: ', inputType);
@@ -115,7 +123,6 @@ const Principal = () => {
 
       setIsSubmitting(false);
       if (result) {
-
         console.log('Pasando a ArgumentAnalysis: ', result)
 
         navigate('/argument-analysis', { state: { analysisData: result.data.analysis } });
@@ -204,7 +211,7 @@ const Principal = () => {
                   checked={inputType === "youtube"}
                   onChange={handleOptionChange}
                 />
-                Youtube
+                YouTube
               </label>
             </div>
             <div className="input-container">

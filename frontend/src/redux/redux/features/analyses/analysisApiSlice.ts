@@ -45,6 +45,13 @@ export const analysisApiSlice = createApi({
         }
       }
     }),
+    videoAnalysis: builder.mutation({
+      query: (formData: FormData) => ({
+        url: ApiConstants.analysisUrls.video,
+        method: 'POST',
+        body: formData,
+      }),
+    }),
   })
 })
 
@@ -52,4 +59,5 @@ export const {
   useAudioAnalysisMutation,
   useGetPreviousAnalysesMutation,
   useTextAnalysisMutation,
+  useVideoAnalysisMutation,
 } = analysisApiSlice;
