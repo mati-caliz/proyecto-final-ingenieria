@@ -176,7 +176,7 @@ const Principal = () => {
             )}
           </div>
           <div className="options">
-            <h2 className="central-title">Ingrese un archivo o texto</h2>
+            <h2 className="central-title">Elija qué desea analizar</h2>
             <div className="choices">
               <label>
                 <input
