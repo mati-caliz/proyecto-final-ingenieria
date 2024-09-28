@@ -128,6 +128,16 @@
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+.url-input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-family: 'Merriweather', serif;
+    font-size: 1em;
+    min-height: 2vw;
+    min-width: 30vw;
+}
+
 #textarea-input:focus {
     border-color: #007bff; /* Cambia el color del borde al hacer foco */
     outline: none; /* Quita el borde por defecto al hacer foco */

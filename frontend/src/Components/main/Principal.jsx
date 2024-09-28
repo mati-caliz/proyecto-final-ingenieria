@@ -7,7 +7,7 @@ import {
   useGetPreviousAnalysesMutation,
   useTextAnalysisMutation,
   useAudioAnalysisMutation,
-  useVideoAnalysisMutation,
+  useVideoAnalysisMutation, useYoutubeAnalysisMutation,
 } from '../../redux/redux/features/analyses/analysisApiSlice';
 
 const Principal = () => {
@@ -20,6 +20,7 @@ const Principal = () => {
   const [requestTextAnalysis] = useTextAnalysisMutation();
   const [requestAudioAnalysis] = useAudioAnalysisMutation();
   const [requestVideoAnalysis] = useVideoAnalysisMutation();
+  const [requestYouTubeAnalysis] = useYoutubeAnalysisMutation();
   const [previousAnalyses, setPreviousAnalyses] = useState([]);
   const [loadingPreviousAnalyses, setLoadingPreviousAnalyses] = useState(true);
   const navigate = useNavigate();
@@ -115,6 +116,10 @@ const Principal = () => {
           videoFormData.append('video_file', selectedFile);
           result = await requestVideoAnalysis(videoFormData);
           console.log('Video analysis result: ', result);
+          break;
+        case "youtube":
+          result = await requestYouTubeAnalysis({ text: inputValue });
+          console.log('YouTube analysis result: ', result);
           break;
         default:
           console.error('Unexpected input type: ', inputType);
@@ -235,6 +240,7 @@ const Principal = () => {
               {inputType === "youtube" && (
                 <input
                   id={"youtube-input"}
+                  className="url-input"
                   type="text"
                   placeholder={"Ingrese la URL de YouTube"}
                   value={inputValue}

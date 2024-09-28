@@ -5,6 +5,7 @@ const ApiConstants = {
         getPreviousAnalyses: 'analyses/latest',
         text: 'analyses/text',
         video: 'analyses/video',
+        youtube: 'analyses/url',
     },
     userUrls: {
         root: 'users',
