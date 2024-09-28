@@ -2,11 +2,12 @@ import React from 'react';
 import './ArgumentAnalysis.css';
 import Navbar from "../navBar/Navbar";
 import { Analysis, AnalysisResponse } from '../../redux/redux/features/analyses/ResponseTypes';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ArgumentAnalysis = () => {
   const location = useLocation();
-  const analysisData = location.state?.analysisData; // Recibe el estado de la navegación
+  const navigate = useNavigate();
+  const analysisData = location.state?.analysisData;
   let parsedData: AnalysisResponse | null = null;
 
   console.log('analysisData', analysisData);
@@ -14,7 +15,7 @@ const ArgumentAnalysis = () => {
   try {
     parsedData = JSON.parse(analysisData) as AnalysisResponse;
     parsedData.analysis.map((item: Analysis, index: number) => {
-      console.log(`item ${index}: `, item)
+      console.log(`item ${index}: `, item);
     });
   } catch (error) {
     console.error("Error al parsear el JSON:", error);
@@ -24,6 +25,10 @@ const ArgumentAnalysis = () => {
     <div>
       <Navbar />
       <div className="container">
+        <div className="back-link-container">
+          <p className="back-link" onClick={() => navigate(-1)}>&lt; Volver</p>
+        </div>
+
         {parsedData && parsedData.title && parsedData.analysis ? (
           <>
             <h1>{parsedData.title}</h1>

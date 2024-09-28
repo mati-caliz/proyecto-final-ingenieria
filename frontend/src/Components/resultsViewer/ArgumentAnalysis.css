@@ -54,3 +54,16 @@ h2 {
     background-color: #d1ecf1;
     color: #17a2b8;
 }
+
+.back-link-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.back-link {
+    color: blue;
+    cursor: pointer;
+    font-size: 30px;
+}
