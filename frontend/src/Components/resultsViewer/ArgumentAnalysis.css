@@ -1,10 +1,13 @@
-
-
 .container {
     margin: 0 auto;
     padding: 20px;
     background-color: white;
     border: 1px solid #ddd;
+}
+
+.analysis-content {
+    background: rgba(255, 255, 255, 0.1) url('../assets/analysis-background.png');
+    background-size: cover;
 }
 
 h1 {

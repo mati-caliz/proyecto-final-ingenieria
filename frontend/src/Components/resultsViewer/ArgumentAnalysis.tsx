@@ -24,7 +24,7 @@ const ArgumentAnalysis = () => {
   return (
     <div>
       <Navbar />
-      <div className="container">
+      <div className="container analysis-content">
         <div className="back-link-container">
           <p className="back-link" onClick={() => navigate(-1)}>&lt; Volver</p>
         </div>

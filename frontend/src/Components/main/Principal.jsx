@@ -156,7 +156,7 @@ const Principal = () => {
   return (
     <div>
       <Navbar />
-      <div className="container">
+      <div className="container principal-content">
         <div className="content">
           <div className="left-section">
             <h2 className="section-title">Análisis Anteriores</h2>
