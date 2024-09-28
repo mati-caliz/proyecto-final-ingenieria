@@ -154,7 +154,7 @@ const Principal = () => {
   const { left, right } = splitAnalyses();
 
   return (
-    <div>
+    <div className="main">
       <Navbar />
       <div className="container principal-content">
         <div className="content">
