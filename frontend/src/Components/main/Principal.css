@@ -146,15 +146,15 @@
 }
 
 #textarea-input:focus {
-    border-color: #007bff; /* Cambia el color del borde al hacer foco */
-    outline: none; /* Quita el borde por defecto al hacer foco */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Sombra azul alrededor al hacer foco */
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
 #file-input {
     width: 100%;
     font-size: 1em;
-    padding: 15%;
+    padding: 15% 0;
     align-content: center;
     justify-content: center;
     display: flex;
