@@ -2,28 +2,51 @@ services:
   backend:
     build:
       context: ./backend
-    container_name: django_backend
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - ./backend:/app
+    container_name: backend
     ports:
       - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=argucheckdb
+      - DB_USER=argucheck
+      - DB_PASSWORD=admin
+      - DB_PORT=5432
     depends_on:
       - db
-    env_file:
-      - ./backend/conf/settings/.env
 
   db:
-    image: postgres:13-alpine
+    image: postgres:13
     container_name: postgres_db
     environment:
       POSTGRES_USER: argucheck
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: argucheckdb
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    volumes:
+      - frontend_build:/app/build
+    depends_on:
+      - backend
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html
 
 volumes:
   postgres_data:
+  frontend_build:
