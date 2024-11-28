@@ -15,3 +15,5 @@
 ## Autores
 - Matias Caliz | macaliz@uade.edu.ar
 - Christian Digiorno | cdigiorno@uade.edu.ar
+- Tutor: Román Ghio
+Universidad Argentina de la Empresa, 2024
