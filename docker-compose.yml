@@ -1,0 +1,29 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: django_backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ./backend/conf/settings/.env
+
+  db:
+    image: postgres:13-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: argucheck
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: argucheckdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
