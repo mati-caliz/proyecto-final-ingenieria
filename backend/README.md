@@ -1,6 +1,3 @@
-# grupo-31-pfi-backend
-
-
 ## Setup
 
 ### pyenv
