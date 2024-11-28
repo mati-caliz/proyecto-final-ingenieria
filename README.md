@@ -12,5 +12,5 @@
   - Ejecutar en la consola (CMD): ```docker-compose up --build```.
 4) Ingresar a ArguCheck en la web, mediante la URL: ```http://localhost```.
 ## Autores
-Matias Caliz | macaliz@uade.edu.ar
-Christian Digiorno | cdigiorno@uade.edu.ar
+- Matias Caliz | macaliz@uade.edu.ar
+- Christian Digiorno | cdigiorno@uade.edu.ar
