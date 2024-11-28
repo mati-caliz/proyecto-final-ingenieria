@@ -12,9 +12,10 @@
 3) Navegar a la carpeta principal y construir los contenedores de Docker:
   - Ejecutar en la consola (CMD): ```docker-compose up --build```.
 4) Ingresar a ArguCheck en la web mediante la URL: ```http://localhost```.
+
+Nota: La aplicación fue diseñada para ejecutarse en un entorno Dockerizado. Recomendamos instalar Docker para una experiencia más sencilla y consistente. Si Docker no está disponible, es posible configurar el entorno manualmente siguiendo los pasos descritos en la sección "README.md" de la carpeta "frontend" y "backend".
 ## Autores
 - Matias Caliz | macaliz@uade.edu.ar
 - Christian Digiorno | cdigiorno@uade.edu.ar
 
-  
 Universidad Argentina de la Empresa, 2024
