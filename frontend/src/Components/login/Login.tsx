@@ -3,38 +3,36 @@ import './Login.css';
 import { useNavigate } from 'react-router-dom';
 import { setUser } from '../../redux/redux/features/users/userSlice';
 import { useAppDispatch } from '../../redux/redux/hooks';
-import { useLoginMutation } from '../../redux/redux/features/users/authApiSlice';
+import { useGoogleLoginMutation } from '../../redux/redux/features/users/authApiSlice';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 interface DecodedToken {
     email: string;
 }
 
 const Login = () => {
-    const [loginUser] = useLoginMutation();
+    const [googleLogin] = useGoogleLoginMutation();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
     const handleGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
         if (credentialResponse.credential) {
             try {
-                // Decodificar el token JWT para obtener la información del usuario
-                const decoded: DecodedToken = jwt_decode(credentialResponse.credential);
+                const decoded: DecodedToken = jwtDecode(credentialResponse.credential);
                 const { email } = decoded;
 
-                // Enviar el token al backend para verificarlo y obtener el token de tu aplicación
-                const loginResult = await loginUser({ token: credentialResponse.credential }).unwrap();
+                const loginResult = await googleLogin({ token: credentialResponse.credential }).unwrap();
 
-                if (loginResult.accessToken) {
+                if (loginResult.access) {
                     const loggedUser = {
-                        accessToken: loginResult.accessToken,
+                        accessToken: loginResult.access,
                         user: { email },
                     };
                     dispatch(setUser(loggedUser));
                     navigate('/principal');
                 } else {
-                    console.error('El backend no devolvió un accessToken');
+                    console.error('El backend no devolvió un access token');
                 }
             } catch (error) {
                 console.error('Error durante el inicio de sesión con Google:', error);
@@ -42,8 +40,8 @@ const Login = () => {
         }
     };
 
-    const handleGoogleLoginFailure = (error: any) => {
-        console.error('Error en el inicio de sesión con Google:', error);
+    const handleGoogleLoginFailure = () => { 
+        console.error('Error en el inicio de sesión con Google.');
     };
 
     return (

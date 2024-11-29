@@ -1,3 +1,5 @@
+// authApiSlice.ts
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import ApiConstants from "../../apiConstants/ApiConstants";
 import { CreateUserRequest, LoginRequest } from "./RequestsTypes";
@@ -8,14 +10,16 @@ interface GoogleLoginRequest {
     token: string;
 }
 
+interface User {
+    email: string;
+    name: string;
+    profile_picture?: string;
+}
+
 interface LoginResponse {
-    access: string;
-    refresh: string;
-    user: {
-        email: string;
-        name: string;
-        profile_picture?: string;
-    };
+    access: string; // Token de acceso
+    refresh: string; // Token de refresco
+    user: User;
 }
 
 export const authApiSlice = createApi({
@@ -57,7 +61,7 @@ export const authApiSlice = createApi({
         googleLogin: builder.mutation<LoginResponse, GoogleLoginRequest>({
             query: (body: GoogleLoginRequest) => {
                 return {
-                    url: ApiConstants.userUrls.googleLogin,
+                    url: ApiConstants.userUrls.login,
                     method: 'POST',
                     body,
                 };
