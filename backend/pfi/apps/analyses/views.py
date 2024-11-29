@@ -15,8 +15,9 @@ from pfi.apps.analyses.models import Analysis
 from pfi.apps.analyses.serializers import AudioAnalysisSerializer, TextAnalysisSerializer, VideoAnalysisSerializer, \
     UrlAnalysisSerializer
 
+client = OpenAI(
+    api_key="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")
 
-client = OpenAI(api_key="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")
 
 class VideoAnalysisView(APIView):
     parser_classes = [MultiPartParser]
@@ -151,6 +152,7 @@ def url_analysis(request):
 
     return Response({"analysis": analysis}, status=status.HTTP_201_CREATED)
 
+
 # Ejemplo de código que debería funcionar:
 # parsed = json.loads(transcription)
 # print(parsed['title'])
@@ -161,28 +163,38 @@ def sendPrompt(text: str):
         response_format={"type": "json_object"},
         messages=[{
             "role": "user",
-            "content": f'Analiza el texto proporcionado al final de este mensaje para determinar si las afirmaciones son verdaderas, falsas, '
-                       f'o, en su defecto, polémicas. Tu respuesta debe tener un máximo de 2000 caracteres. '
-                       f'El formato debe ser un JSON object directamente parseable con JSON.loads() en Python (sin espacios ni newlines) con dos campos. '
-                       f'El primero debe ser "title", con un título que explique de qué trata el texto entero. El segundo debe ser "analysis", que '
-                       f'debe ser un array (nunca un object suelto, siempre array de objetos) '
-                       f'donde cada elemento contenga los campos "affirmation" (para citar lo dicho en el texto), '
-                       f'"analysis" (para explicar el análisis hecho de la afirmación), '
-                       f'y "veredict" (para el veredicto, que debe decir exclusivamente una de las siguientes 3 opciones: "VERDADERO", "FALSO" O "POLÉMICO"). '
-                       f'Prioriza y elige los argumentos más importantes, y asegúrate de proporcionar fuentes confiables de manera explícita '
-                       f'(prioriza .edu y .org sobre otras) '
-                       f'para cada verificación, porque, sin una fuente de calidad puntual para contrastar la información, el análisis no sirve. '
-                       f'Argumentar que la fuente es un "análisis propio" no sirve. Siempre debe haber una fuente para información contrastable, sin excepciones. '
-                       f'Si una afirmación no puede ser verificada con la información disponible, clasifícala como "POLÉMICO" '
-                       f'o ignórala si no es contrastable con alguna fuente reputable, pero no la marques como falsa. '
-                       f'No analices opiniones, hipérbolas, comentarios '
-                       f'que no afirmen algo contrastable, o juicios subjetivos; busca argumentos con información contrastable. '
-                       f'Cuando marques una afirmación como verdadera o falsa, explica el por qué proporcionando los datos correctos con su respectiva fuente. '
-                       f'No expliques que estás haciendo un análisis, sólo llévalo a cabo. Y no recortes el texto de la '
-                       f'afirmación que estés analizando sino que debes dejarlo completo (oración o párrafo entero), '
-                       f'pues una persona debe poder entender el contexto. '
-                       f'El texto a analizar es: {text}'
-        }]
+            "content": f'''
+    Analiza el texto proporcionado según las siguientes reglas. Tu respuesta debe ser un JSON válido con dos campos:  
+    1. "title": Título que resuma el tema general del texto.  
+    2. "analysis": Un array de objetos, donde cada objeto tenga:  
+       - "affirmation": Cita textual del texto, sin modificaciones tuyas.  
+       - "analysis": Análisis de la afirmación que explique su veracidad, ESPECIFICANDO LAS FUENTES DE INFORMACIÓN PARA PODER VISITARLAS Y COMPARAR RESULTADOS. 
+       CUALQUIER ANÁLISIS QUE HAGAS QUE NO TENGA AL MENOS UNA FUENTE EN FORMA DE URL ES INÚTIL, NO SIRVE, HAY QUE REHACER TODO. 
+       - "veredict": "VERDADERO", "FALSO" o "POLÉMICO".  
+
+    ### REGLAS PRINCIPALES:
+    1. Incluye siempre fuentes confiables. Si alguna conclusión carece de al menos una fuente, debes rehacer el análisis del texto entero. 
+       - TODA conclusión debe tener fuentes al final con la etiqueta "Fuentes:". SIN FUENTES, EL ANÁLISIS NO ES VÁLIDO.  
+       - Ejemplo de fuentes para una conclusión: "Fuentes: https://doi.org/10.1177/0267323118760317, https://news.un.org/es/story/2018/05/1432702"
+       - Usa el siguiente sistema de puntaje para seleccionar las mejores fuentes:  
+         - Dominio: (.gov/.gob: 30 pts; .edu: 20 pts; .org: 10 pts; .com/.net: 5 pts; otros: 0 pts).  
+         - Protocolo: HTTPS: 10 pts; HTTP: 0 pts.  
+         - Autoridad: Instituciones reconocidas: 40 pts; fuentes conocidas: 20 pts; poco conocidas: 10 pts.  
+         - Actualidad: <2 años: 20 pts; 2-5 años: 10 pts; >5 años: 0 pts.  
+       Pero no te olvides de agregar tus fuentes. Nunca las olvides. Es muy importante citar las fuentes. Ah, ¿y ya mencioné que las fuentes son importantes?
+       Sin fuentes, lo que sea que digas no sirve. Así que asegúrate de que nunca falten fuentes para respaldar tus conclusiones.
+
+    2. Solo analiza afirmaciones contrastables. 
+       Ignora opiniones, hipérboles o afirmaciones no verificables. Si no puedes verificar una afirmación, clasifícala como "POLÉMICO".  
+
+    3. No modifiques el contenido de las citas.  
+       Cita las afirmaciones completas y sin recortes. No uses elipsis ni ajustes.  
+
+    4. EN SERIO, AGREGA LAS MALDITAS CITAS, SINO LO QUE HAGAS NO TIENE VALOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    El texto a analizar es el siguiente: {text} '''
+        }
+        ]
     )
     data = json.loads(response.choices[0].message.content.strip())
     json_compacto = json.dumps(data, separators=(',', ':'), ensure_ascii=False)
@@ -200,4 +212,3 @@ def latest_analyses(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
