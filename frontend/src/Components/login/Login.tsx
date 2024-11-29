@@ -40,7 +40,7 @@ const Login = () => {
         }
     };
 
-    const handleGoogleLoginFailure = () => { 
+    const handleGoogleLoginFailure = () => {
         console.error('Error en el inicio de sesión con Google.');
     };
 
