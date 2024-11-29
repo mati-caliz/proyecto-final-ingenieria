@@ -29,14 +29,17 @@ services:
   frontend:
     build:
       context: ./frontend
+      args:
+        REACT_APP_API_URL: "http://backend:8000"
     container_name: frontend
     volumes:
       - frontend_build:/app/build
     depends_on:
       - backend
     environment:
-      - NODE_ENV=development
-      - REACT_APP_API_URL=http://backend:8000
+      - NODE_ENV=production
+    ports:
+      - "80:80"
 
   nginx:
     build:

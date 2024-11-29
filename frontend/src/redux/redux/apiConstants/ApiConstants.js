@@ -1,7 +1,5 @@
 const ApiConstants = {
-    baseUrl: process.env.NODE_ENV === 'production'
-        ? 'TODO AWS url'
-        : 'http://localhost:8000/',
+    baseUrl: process.env.REACT_APP_API_URL || 'http://localhost:8000/',
     analysisUrls: {
         audio: 'analyses/audio',
         getPreviousAnalyses: 'analyses/latest',

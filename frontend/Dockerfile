@@ -1,6 +1,12 @@
 # Usar una imagen base de Node.js
 FROM node:14-alpine as build
 
+# Definir el argumento de construcción
+ARG REACT_APP_API_URL
+
+# Establecer la variable de entorno
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
 # Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
