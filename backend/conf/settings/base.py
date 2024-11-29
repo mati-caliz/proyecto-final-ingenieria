@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'drf_yasg',
     'pfi.apps.analyses.apps.CommandsConfig',
+    'pfi.apps.subscriptions.apps.SubscriptionsConfig',
     'pfi.apps.users.apps.UsersConfig',
     'rest_framework',
     'corsheaders',  # Asegúrate de que este middleware está instalado
@@ -49,12 +50,12 @@ ROOT_URLCONF = 'conf.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  
-        'APP_DIRS': True,  
+        'DIRS': [],
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',  
+                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
