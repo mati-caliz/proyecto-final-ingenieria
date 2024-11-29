@@ -1,61 +1,58 @@
-import { useState } from 'react';
+import React from 'react';
 import './Login.css';
-import { FaUser, FaLock } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import {setUser} from '../../redux/redux/features/users/userSlice';
+import { setUser } from '../../redux/redux/features/users/userSlice';
 import { useAppDispatch } from '../../redux/redux/hooks';
 import { useLoginMutation } from '../../redux/redux/features/users/authApiSlice';
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
+import jwt_decode from 'jwt-decode';
+
+interface DecodedToken {
+    email: string;
+}
 
 const Login = () => {
-  const [loginUser, {data: loginData, isError: isLoginError, isSuccess: isLoginSuccess}] = useLoginMutation()
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+    const [loginUser] = useLoginMutation();
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
-  const handleSubmit = async (email: string, password: string, event: any) => {
-    try {
-      event.preventDefault()
-      const loginResult = await loginUser({ email: email, password });
+    const handleGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
+        if (credentialResponse.credential) {
+            try {
+                // Decodificar el token JWT para obtener la información del usuario
+                const decoded: DecodedToken = jwt_decode(credentialResponse.credential);
+                const { email } = decoded;
 
-      if ('data' in loginResult && 'accessToken' in loginResult.data) {
-        console.log('entro handle Login');
-        console.log('isLoginSuccess', isLoginSuccess);
+                // Enviar el token al backend para verificarlo y obtener el token de tu aplicación
+                const loginResult = await loginUser({ token: credentialResponse.credential }).unwrap();
 
-        const data = loginResult.data as any;
-        if (data.accessToken) {
-          console.log('Login Request', data);
-          const loggedUser = {
-            accessToken: data.accessToken,
-            user: { email },
-          };
-          dispatch(setUser(loggedUser));
-          navigate('/principal');
-        } else {
-          console.error('Login response does not contain token')
+                if (loginResult.accessToken) {
+                    const loggedUser = {
+                        accessToken: loginResult.accessToken,
+                        user: { email },
+                    };
+                    dispatch(setUser(loggedUser));
+                    navigate('/principal');
+                } else {
+                    console.error('El backend no devolvió un accessToken');
+                }
+            } catch (error) {
+                console.error('Error durante el inicio de sesión con Google:', error);
+            }
         }
-      } else {
-        console.error('Login error:', loginResult);
-      }
-    } catch (error) {
-      console.error('Other error:', error);
-    }
-  }
+    };
+
+    const handleGoogleLoginFailure = (error: any) => {
+        console.error('Error en el inicio de sesión con Google:', error);
+    };
 
     return (
         <div className="wrapper">
-            <form>
             <h1>Login</h1>
-            <div className="input-box">
-                <input type="text" placeholder="Email" required onChange={(e)=>setEmail(e.target.value)} />
-                <FaUser className='icon'/>
-            </div>
-            <div className="input-box">
-                <input type="password" placeholder="Password" required onChange={(e)=>setPassword(e.target.value)} />
-                <FaLock className='icon'/>
-            </div>
-            <button type="submit" onClick={(event)=>handleSubmit(email, password, event)}>Login</button>
-            </form>
+            <GoogleLogin
+                onSuccess={handleGoogleLoginSuccess}
+                onError={handleGoogleLoginFailure}
+            />
         </div>
     );
 };
