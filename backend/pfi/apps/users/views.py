@@ -53,7 +53,6 @@ class GoogleLoginView(APIView):
             name = idinfo.get('name', '')
             profile_picture = idinfo.get('picture', '')
 
-            # Buscar o crear usuario en la base de datos
             user, created = User.objects.get_or_create(email=email, defaults={
                 'google_id': google_id,
                 'first_name': name.split(" ")[0],

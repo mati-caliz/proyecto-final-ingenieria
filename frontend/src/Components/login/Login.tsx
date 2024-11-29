@@ -17,19 +17,24 @@ const Login = () => {
     const dispatch = useAppDispatch();
 
     const handleGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
+        console.log('Google Login Success:', credentialResponse);
+
         if (credentialResponse.credential) {
             try {
                 const decoded: DecodedToken = jwtDecode(credentialResponse.credential);
-                const { email } = decoded;
+                console.log('Decoded Token:', decoded);
 
                 const loginResult = await googleLogin({ token: credentialResponse.credential }).unwrap();
+                console.log('Login Result:', loginResult);
 
                 if (loginResult.access) {
                     const loggedUser = {
                         accessToken: loginResult.access,
-                        user: { email },
+                        user: { email: decoded.email },
                     };
                     dispatch(setUser(loggedUser));
+                    console.log('User set in Redux:', loggedUser);
+
                     navigate('/principal');
                 } else {
                     console.error('El backend no devolvió un access token');
@@ -40,6 +45,7 @@ const Login = () => {
         }
     };
 
+
     const handleGoogleLoginFailure = () => {
         console.error('Error en el inicio de sesión con Google.');
     };
@@ -47,10 +53,12 @@ const Login = () => {
     return (
         <div className="wrapper">
             <h1>Login</h1>
-            <GoogleLogin
-                onSuccess={handleGoogleLoginSuccess}
-                onError={handleGoogleLoginFailure}
-            />
+            <div className="google-login">
+                <GoogleLogin
+                    onSuccess={handleGoogleLoginSuccess}
+                    onError={handleGoogleLoginFailure}
+                />
+            </div>
         </div>
     );
 };

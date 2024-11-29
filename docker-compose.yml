@@ -34,6 +34,9 @@ services:
       - frontend_build:/app/build
     depends_on:
       - backend
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://backend:8000
 
   nginx:
     build:
