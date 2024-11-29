@@ -36,9 +36,11 @@ class User(AbstractUser):
         max_length=100,
         unique=True
     )
+    google_id = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    profile_picture = models.URLField(null=True, blank=True)
 
-    #  manager
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+

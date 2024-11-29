@@ -43,6 +43,8 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+GOOGLE_CLIENT_ID="868264655617-qpks2tnvus1p481563ovn6sh10k3cffb.apps.googleusercontent.com"
+
 APPEND_SLASH = False
 
 ROOT_URLCONF = 'conf.urls'
