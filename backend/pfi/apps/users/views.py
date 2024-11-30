@@ -44,7 +44,7 @@ class GoogleLoginView(APIView):
         try:
             # Validar el token de Google
             idinfo = id_token.verify_oauth2_token(
-                token, requests.Request(), "TU_CLIENT_ID_DE_GOOGLE"
+                token, requests.Request(), "868264655617-qpks2tnvus1p481563ovn6sh10k3cffb.apps.googleusercontent.com"
             )
 
             # Extraer datos del token

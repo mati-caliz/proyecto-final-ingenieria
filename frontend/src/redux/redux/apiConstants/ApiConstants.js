@@ -9,7 +9,7 @@ const ApiConstants = {
     },
     userUrls: {
         root: 'users',
-        login: 'users/login',
+        login: 'users/login/',
     }
 }
 

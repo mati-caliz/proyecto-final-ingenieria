@@ -34,7 +34,6 @@ const Login = () => {
                     };
                     dispatch(setUser(loggedUser));
                     console.log('User set in Redux:', loggedUser);
-
                     navigate('/principal');
                 } else {
                     console.error('El backend no devolvió un access token');

@@ -1,11 +1,9 @@
 // authApiSlice.ts
-
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import ApiConstants from "../../apiConstants/ApiConstants";
 import { CreateUserRequest, LoginRequest } from "./RequestsTypes";
 import { RootState } from "../../store";
 
-// Define los tipos de las solicitudes y respuestas
 interface GoogleLoginRequest {
     token: string;
 }
@@ -17,8 +15,8 @@ interface User {
 }
 
 interface LoginResponse {
-    access: string; // Token de acceso
-    refresh: string; // Token de refresco
+    access: string;
+    refresh: string;
     user: User;
 }
 
@@ -36,36 +34,26 @@ export const authApiSlice = createApi({
         },
     }),
     endpoints: (builder) => ({
-        // Endpoint para login tradicional con usuario y contraseña
         login: builder.mutation<LoginResponse, LoginRequest>({
-            query: (body: LoginRequest) => {
-                console.log('Received login data: ', body);
-                return {
-                    url: ApiConstants.userUrls.login,
-                    method: 'POST',
-                    body,
-                };
-            },
+            query: (body: LoginRequest) => ({
+                url: `${ApiConstants.userUrls.login}`,
+                method: 'POST',
+                body,
+            }),
         }),
-        // Endpoint para registrar un nuevo usuario
         register: builder.mutation<void, CreateUserRequest>({
-            query: (body: CreateUserRequest) => {
-                return {
-                    url: ApiConstants.userUrls.root,
-                    method: 'POST',
-                    body,
-                };
-            },
+            query: (body: CreateUserRequest) => ({
+                url: `${ApiConstants.userUrls.root}`,
+                method: 'POST',
+                body,
+            }),
         }),
-        // Endpoint para login con Google
         googleLogin: builder.mutation<LoginResponse, GoogleLoginRequest>({
-            query: (body: GoogleLoginRequest) => {
-                return {
-                    url: ApiConstants.userUrls.login,
-                    method: 'POST',
-                    body,
-                };
-            },
+            query: (body: GoogleLoginRequest) => ({
+                url: `${ApiConstants.userUrls.login}`,
+                method: 'POST',
+                body,
+            }),
         }),
     }),
 });
