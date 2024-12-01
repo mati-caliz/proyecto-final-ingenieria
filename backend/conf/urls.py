@@ -1,16 +1,19 @@
-from django.conf import settings
 from django.contrib import admin
+from django.urls import path, include
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 from django.urls import include, path, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from rest_framework import permissions
+from django.conf import settings
 from django.shortcuts import redirect
 
 urlpatterns = [
     path('', lambda request: redirect('/analyses/', permanent=True)),
     path('admin/', admin.site.urls),
-    path("analyses/", include("pfi.apps.analyses.urls")),
-    path("users/", include("pfi.apps.users.urls")),
+    path('users/', include('pfi.apps.users.urls')),
+    path('analyses/', include('pfi.apps.analyses.urls')),
 ]
 
 if settings.ENABLE_SWAGGER:
@@ -21,7 +24,7 @@ if settings.ENABLE_SWAGGER:
             default_version='v1',
             description="Project's endpoints",
             terms_of_service="https://www.google.com/policies/terms/",
-            contact=openapi.Contact(email="contact@snippets.local"),
+            contact=openapi.Contact(email="matiascaliz@hotmail.com"),
             license=openapi.License(name="BSD License"),
         ),
         public=True,

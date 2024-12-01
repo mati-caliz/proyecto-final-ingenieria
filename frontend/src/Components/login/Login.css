@@ -5,11 +5,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 .wrapper h1 {
     font-size: 36px;
     text-align: center;
+    margin-bottom: 20px;
+}
+
+.wrapper .google-login {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
 }
 
 .wrapper .input-box {

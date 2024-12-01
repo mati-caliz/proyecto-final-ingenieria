@@ -3,6 +3,9 @@ services:
     build:
       context: ./backend
     container_name: backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
     ports:
       - "8000:8000"
     environment:
@@ -11,6 +14,8 @@ services:
       - DB_USER=argucheck
       - DB_PASSWORD=admin
       - DB_PORT=5432
+    env_file:
+      - ./backend/.env
     depends_on:
       - db
 
@@ -29,11 +34,17 @@ services:
   frontend:
     build:
       context: ./frontend
+      args:
+        REACT_APP_API_URL: "http://localhost:8000"
     container_name: frontend
     volumes:
       - frontend_build:/app/build
     depends_on:
       - backend
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3000:80"
 
   nginx:
     build:

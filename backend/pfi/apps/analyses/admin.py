@@ -4,7 +4,6 @@ from django.contrib import admin
 
 from pfi.apps.analyses.models import Analysis
 
-
 class AnalysisAdmin(admin.ModelAdmin):
     list_display = ['get_title', 'requester', 'created_at', 'is_premium_request']
     ordering = ['-created_at']
@@ -16,7 +15,6 @@ class AnalysisAdmin(admin.ModelAdmin):
         except (ValueError, TypeError):
             return 'Formato inválido'
 
-    # Nombre de la columna que aparecerá en la interfaz de administración
     get_title.short_description = 'Título del análisis'
 
 admin.site.register(Analysis, AnalysisAdmin)

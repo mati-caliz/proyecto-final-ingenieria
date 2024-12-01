@@ -1,61 +1,63 @@
-import { useState } from 'react';
+import React from 'react';
 import './Login.css';
-import { FaUser, FaLock } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import {setUser} from '../../redux/redux/features/users/userSlice';
+import { setUser } from '../../redux/redux/features/users/userSlice';
 import { useAppDispatch } from '../../redux/redux/hooks';
-import { useLoginMutation } from '../../redux/redux/features/users/authApiSlice';
+import { useGoogleLoginMutation } from '../../redux/redux/features/users/authApiSlice';
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
+
+interface DecodedToken {
+    email: string;
+}
 
 const Login = () => {
-  const [loginUser, {data: loginData, isError: isLoginError, isSuccess: isLoginSuccess}] = useLoginMutation()
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+    const [googleLogin] = useGoogleLoginMutation();
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
-  const handleSubmit = async (email: string, password: string, event: any) => {
-    try {
-      event.preventDefault()
-      const loginResult = await loginUser({ email: email, password });
+    const handleGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
+        console.log('Google Login Success:', credentialResponse);
 
-      if ('data' in loginResult && 'accessToken' in loginResult.data) {
-        console.log('entro handle Login');
-        console.log('isLoginSuccess', isLoginSuccess);
+        if (credentialResponse.credential) {
+            try {
+                const decoded: DecodedToken = jwtDecode(credentialResponse.credential);
+                console.log('Decoded Token:', decoded);
 
-        const data = loginResult.data as any;
-        if (data.accessToken) {
-          console.log('Login Request', data);
-          const loggedUser = {
-            accessToken: data.accessToken,
-            user: { email },
-          };
-          dispatch(setUser(loggedUser));
-          navigate('/principal');
-        } else {
-          console.error('Login response does not contain token')
+                const loginResult = await googleLogin({ token: credentialResponse.credential }).unwrap();
+                console.log('Login Result:', loginResult);
+
+                if (loginResult.access) {
+                    const loggedUser = {
+                        accessToken: loginResult.access,
+                        user: { email: decoded.email },
+                    };
+                    dispatch(setUser(loggedUser));
+                    console.log('User set in Redux:', loggedUser);
+                    navigate('/principal');
+                } else {
+                    console.error('El backend no devolvió un access token');
+                }
+            } catch (error) {
+                console.error('Error durante el inicio de sesión con Google:', error);
+            }
         }
-      } else {
-        console.error('Login error:', loginResult);
-      }
-    } catch (error) {
-      console.error('Other error:', error);
-    }
-  }
+    };
+
+
+    const handleGoogleLoginFailure = () => {
+        console.error('Error en el inicio de sesión con Google.');
+    };
 
     return (
         <div className="wrapper">
-            <form>
             <h1>Login</h1>
-            <div className="input-box">
-                <input type="text" placeholder="Email" required onChange={(e)=>setEmail(e.target.value)} />
-                <FaUser className='icon'/>
+            <div className="google-login">
+                <GoogleLogin
+                    onSuccess={handleGoogleLoginSuccess}
+                    onError={handleGoogleLoginFailure}
+                />
             </div>
-            <div className="input-box">
-                <input type="password" placeholder="Password" required onChange={(e)=>setPassword(e.target.value)} />
-                <FaLock className='icon'/>
-            </div>
-            <button type="submit" onClick={(event)=>handleSubmit(email, password, event)}>Login</button>
-            </form>
         </div>
     );
 };
