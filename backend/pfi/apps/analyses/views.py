@@ -3,17 +3,16 @@ import json
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from openai import OpenAI
+from pfi.apps.analyses.converters import AudioToTextConverter, VideoToAudioConverter, YouTubeUrlToVideoConverter
+from pfi.apps.analyses.models import Analysis
+from pfi.apps.analyses.serializers import AudioAnalysisSerializer, TextAnalysisSerializer, VideoAnalysisSerializer, \
+    UrlAnalysisSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from pfi.apps.analyses.converters import AudioToTextConverter, VideoToAudioConverter, YouTubeUrlToVideoConverter
-from pfi.apps.analyses.models import Analysis
-from pfi.apps.analyses.serializers import AudioAnalysisSerializer, TextAnalysisSerializer, VideoAnalysisSerializer, \
-    UrlAnalysisSerializer
 
 client = OpenAI(
     api_key="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")
@@ -153,50 +152,74 @@ def url_analysis(request):
     return Response({"analysis": analysis}, status=status.HTTP_201_CREATED)
 
 
-# Ejemplo de código que debería funcionar:
-# parsed = json.loads(transcription)
-# print(parsed['title'])
-# print(parsed['analysis'])
 def sendPrompt(text: str):
     response = client.chat.completions.create(
         model="gpt-4o",
+        # model="o1-preview",
         response_format={"type": "json_object"},
         messages=[{
             "role": "user",
             "content": f'''
     Analiza el texto proporcionado según las siguientes reglas. Tu respuesta debe ser un JSON válido con dos campos:  
     1. "title": Título que resuma el tema general del texto.  
-    2. "analysis": Un array de objetos, donde cada objeto tenga:  
+    2. "analysis": Un array de objetos, donde cada objeto tenga estos tres campos (las fuentes no son un campo separado):  
        - "affirmation": Cita textual del texto, sin modificaciones tuyas.  
-       - "analysis": Análisis de la afirmación que explique su veracidad, ESPECIFICANDO LAS FUENTES DE INFORMACIÓN PARA PODER VISITARLAS Y COMPARAR RESULTADOS. 
-       CUALQUIER ANÁLISIS QUE HAGAS QUE NO TENGA AL MENOS UNA FUENTE EN FORMA DE URL ES INÚTIL, NO SIRVE, HAY QUE REHACER TODO. 
-       - "veredict": "VERDADERO", "FALSO" o "POLÉMICO".  
+       - "analysis": Análisis de la afirmación que explique su veracidad, ESPECIFICANDO DENTRO DE ESTE MISMO TEXTO LAS FUENTES DE 
+       INFORMACIÓN PARA PODER VISITARLAS Y COMPARAR RESULTADOS (agregar estas fuentes al final, preferiblemente no en el medio). 
+       - "veredict": Un string "VERDADERO", "FALSO" o "POLÉMICO", dependiendo de cómo hayas visto la veracidad de la afirmación.  
 
     ### REGLAS PRINCIPALES:
     1. Incluye siempre fuentes confiables. Si alguna conclusión carece de al menos una fuente, debes rehacer el análisis del texto entero. 
-       - TODA conclusión debe tener fuentes al final con la etiqueta "Fuentes:". SIN FUENTES, EL ANÁLISIS NO ES VÁLIDO.  
-       - Ejemplo de fuentes para una conclusión: "Fuentes: https://doi.org/10.1177/0267323118760317, https://news.un.org/es/story/2018/05/1432702"
+       - TODA conclusión en el campo "analysis.affirmation" debe tener fuentes al final con la etiqueta "Fuentes:". 
+       SIN FUENTES, EL ANÁLISIS NO ES VÁLIDO. La única excepción es si no existe fuente alguna para analizar que 
+       la afirmación sea verdadera.  
+       - Ejemplo de fuentes para el campo "analysis.analysis": 
+       "Fuentes: https://doi.org/10.1177/0267323118760317, https://news.un.org/es/story/2018/05/1432702"
        - Usa el siguiente sistema de puntaje para seleccionar las mejores fuentes:  
          - Dominio: (.gov/.gob: 30 pts; .edu: 20 pts; .org: 10 pts; .com/.net: 5 pts; otros: 0 pts).  
          - Protocolo: HTTPS: 10 pts; HTTP: 0 pts.  
          - Autoridad: Instituciones reconocidas: 40 pts; fuentes conocidas: 20 pts; poco conocidas: 10 pts.  
          - Actualidad: <2 años: 20 pts; 2-5 años: 10 pts; >5 años: 0 pts.  
-       Pero no te olvides de agregar tus fuentes. Nunca las olvides. Es muy importante citar las fuentes. Ah, ¿y ya mencioné que las fuentes son importantes?
-       Sin fuentes, lo que sea que digas no sirve. Así que asegúrate de que nunca falten fuentes para respaldar tus conclusiones.
+       - Se reitera que se debe revisar los análisis una vez generados. Si al final de cada análisis no está el texto 
+       "Fuentes: " seguido de al menos una fuente en formato URL cuyo contenido haya sido usado para 
+       llevar a cabo tu análisis, entonces el mismo es un fracaso y 
+       debe ser rehecho hasta que sí aparezcan las fuentes. Estas fuentes deben ser visitables para comparar tu respuesta. Y 
+       no deben ser un campo separado dentro del objeto de cada análisis, sino que DEBE SER PARTE DEL TEXTO DEL CAMPO "analysis". 
+       No olvides las fuentes. No olvides las fuentes. NO OLVIDES LAS FUENTES.
 
     2. Solo analiza afirmaciones contrastables. 
        Ignora opiniones, hipérboles o afirmaciones no verificables. Si no puedes verificar una afirmación, clasifícala como "POLÉMICO".  
 
     3. No modifiques el contenido de las citas.  
-       Cita las afirmaciones completas y sin recortes. No uses elipsis ni ajustes.  
-
-    4. EN SERIO, AGREGA LAS MALDITAS CITAS, SINO LO QUE HAGAS NO TIENE VALOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+       Cita las afirmaciones completas y sin recortes. No uses elipsis ni ajustes.
+       
+    4. NO USES comillas dobles. Si es necesario, debes escaparlas, porque tu respuesta será procesada con json.loads() en Python 
+    y pueden causar errores.    
+       
+    5. No olvidar agregar las fuentes al final del texto que contiene tu análisis de cada afirmación leída. Es muy importante.
+    Este análisis que armaste se usará para ser mostrado en una página web que mostrará, para cada argumento, 
+    cita del texto -> tu análisis (que debe incluir las fuentes) -> veredicto.
+    No olvides las fuentes. No olvides las fuentes. No olvides las fuentes. No olvides las fuentes. No olvides las fuentes. 
+    
+    6. ¿Chequeaste que estén las fuentes? En serio, las fuentes deben estar. Debe estar incluido en el análisis de cada 
+    argumento el listado de fuentes que usaste.  
+    
+    6. Chequeá de nuevo que estén las fuentes dentro del texto de tu análisis. Deben ser URLs. Esto no debe afectar al 
+    campo que contiene el valor del veredicto (VERDADERO, FALSO, POLÉMICO).  
 
     El texto a analizar es el siguiente: {text} '''
         }
         ]
     )
-    data = json.loads(response.choices[0].message.content.strip())
+    received_text = response.choices[0].message.content.strip().strip('```json').strip('```')
+    try:
+        data = json.loads(received_text)
+    except Exception as e:
+        print(e)
+        raise e
+    for analysis in data['analysis']:
+        if analysis.get("Fuentes", analysis.get("fuentes", "")):
+            analysis['analysis'] = analysis['analysis'] + analysis.get("Fuentes", analysis.get("fuentes", ""))
     json_compacto = json.dumps(data, separators=(',', ':'), ensure_ascii=False)
     return json_compacto
 
