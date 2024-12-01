@@ -1,3 +1,5 @@
+# Dockerfile del backend
+
 # Imagen base de Python
 FROM python:3.10-slim
 
@@ -20,5 +22,5 @@ COPY . .
 # Exponer el puerto en el que correrá el servidor Django
 EXPOSE 8000
 
-# Comando predeterminado para iniciar el servidor
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Comando predeterminado para aplicar migraciones y luego iniciar el servidor
+CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
