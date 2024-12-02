@@ -1,5 +1,7 @@
 import json
+from datetime import timedelta
 
+from django.utils.timezone import now, localtime
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from openai import OpenAI
@@ -13,6 +15,8 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from pfi.apps.subscriptions.models import Subscription
 
 client = OpenAI(
     api_key="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")
@@ -46,6 +50,16 @@ class VideoAnalysisView(APIView):
         serializer = VideoAnalysisSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        user = self.request.user
+        has_active_subscription = Subscription.objects.filter(
+            user=user,
+            created_at__gte=now()-timedelta(days=30),
+            expires_at__gte=now()
+        ).exists()
+        if not has_active_subscription:
+            if has_exceeded_analysis_limit(user):
+                return Response({}, status=status.HTTP_402_PAYMENT_REQUIRED)
+
         video_file = serializer.validated_data['video_file']
         try:
             audio_file = VideoToAudioConverter.convert(video_file)
@@ -54,8 +68,7 @@ class VideoAnalysisView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            analysis = sendPrompt(transcription)
-            user = self.request.user
+            analysis = sendPrompt(transcription, has_active_subscription)
             newAnalysis = Analysis.objects.create(is_premium_request=False, requester=user, result=analysis)
             newAnalysis.save()
         except Exception as e:
@@ -92,6 +105,16 @@ class AudioAnalysisView(APIView):
         serializer = AudioAnalysisSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        user = self.request.user
+        has_active_subscription = Subscription.objects.filter(
+            user=user,
+            created_at__gte=now()-timedelta(days=30),
+            expires_at__gte=now()
+        ).exists()
+        if not has_active_subscription:
+            if has_exceeded_analysis_limit(user):
+                return Response({}, status=status.HTTP_402_PAYMENT_REQUIRED)
+
         audio_file = serializer.validated_data['audio_file']
         try:
             transcription = AudioToTextConverter.convert(audio_file)
@@ -99,8 +122,7 @@ class AudioAnalysisView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            analysis = sendPrompt(transcription)
-            user = self.request.user
+            analysis = sendPrompt(transcription, has_active_subscription)
             newAnalysis = Analysis.objects.create(is_premium_request=False, requester=user, result=analysis)
             newAnalysis.save()
         except Exception as e:
@@ -117,8 +139,17 @@ def text_analysis(request):
     text_analysis_serializer.is_valid(raise_exception=True)
 
     try:
-        analysis = sendPrompt(text_analysis_serializer.data['text'])
         user = request.user
+        has_active_subscription = Subscription.objects.filter(
+            user=user,
+            created_at__gte=now()-timedelta(days=30),
+            expires_at__gte=now()
+        ).exists()
+        if not has_active_subscription:
+            if has_exceeded_analysis_limit(user):
+                return Response({}, status=status.HTTP_402_PAYMENT_REQUIRED)
+
+        analysis = sendPrompt(text_analysis_serializer.data['text'], has_active_subscription)
         newAnalysis = Analysis.objects.create(is_premium_request=False, requester=user, result=analysis)
         newAnalysis.save()
     except Exception as e:
@@ -134,6 +165,16 @@ def url_analysis(request):
     url_analysis_serializer = TextAnalysisSerializer(data=request.data)
     url_analysis_serializer.is_valid(raise_exception=True)
 
+    user = request.user
+    has_active_subscription = Subscription.objects.filter(
+        user=user,
+        created_at__gte=localtime(now()-timedelta(days=30)),
+        expires_at__lte=localtime(now())
+    ).exists()
+    if not has_active_subscription:
+        if has_exceeded_analysis_limit(user):
+            return Response({}, status=status.HTTP_402_PAYMENT_REQUIRED)
+
     try:
         video_file = YouTubeUrlToVideoConverter.convert(request.data.get('text'))
         audio_file = VideoToAudioConverter.convert(video_file)
@@ -142,8 +183,7 @@ def url_analysis(request):
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        analysis = sendPrompt(transcription)
-        user = request.user
+        analysis = sendPrompt(transcription, has_active_subscription)
         newAnalysis = Analysis.objects.create(is_premium_request=False, requester=user, result=analysis)
         newAnalysis.save()
     except Exception as e:
@@ -152,7 +192,8 @@ def url_analysis(request):
     return Response({"analysis": analysis}, status=status.HTTP_201_CREATED)
 
 
-def sendPrompt(text: str):
+def sendPrompt(text: str, has_active_suscription):
+    text = get_limited_string(text, has_active_suscription)
     response = client.chat.completions.create(
         model="gpt-4o",
         # model="o1-preview",
@@ -235,3 +276,19 @@ def latest_analyses(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def get_limited_string(content: str, has_active_subscription: bool) -> str:
+    limit = 5000 if has_active_subscription else 2000
+    return content[:limit]
+
+
+def has_exceeded_analysis_limit(user) -> bool:
+    thirty_days_ago = now() - timedelta(days=30)
+
+    recent_analysis_count = Analysis.objects.filter(
+        requester=user,
+        created_at__gte=thirty_days_ago
+    ).count()
+
+    return recent_analysis_count >= 3
