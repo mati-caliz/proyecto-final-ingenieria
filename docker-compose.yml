@@ -15,8 +15,6 @@ services:
       - DB_USER=argucheck
       - DB_PASSWORD=admin
       - DB_PORT=5432
-    env_file:
-      - ./backend/.env
     depends_on:
       - db
 
