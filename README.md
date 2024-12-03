@@ -6,7 +6,6 @@
   - Ejecutar en la consola (CMD): ```git clone https://github.com/mati-caliz/proyecto-final-ingenieria.git``` (con HTTPS).
   - Ejecutar en la consola (CMD): ```git clone git@github.com:mati-caliz/proyecto-final-ingenieria.git``` (con SSH).
   - Descargar manualmente el código en zip y descomprimirlo.
-3) Agregar un archivo .env en la carpeta principal que deberán solicitar por mail a alguno de los autores.
 2) Instalar Docker:
   - ```https://docs.docker.com/desktop/setup/install/windows-install/```.
 3) Navegar a la carpeta principal y construir los contenedores de Docker:
