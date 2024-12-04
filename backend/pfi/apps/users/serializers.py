@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+from pfi.apps.subscriptions.models import Subscription
 from pfi.apps.users.models import User
 
 
@@ -28,5 +29,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['accessToken'] = data.pop('access')
         data['refreshToken'] = data.pop('refresh')
         data['email'] = self.user.email
+        data['isSubscribed'] = Subscription.is_user_currently_subscribed(self.user)
 
         return data

@@ -51,11 +51,7 @@ class VideoAnalysisView(APIView):
         serializer.is_valid(raise_exception=True)
 
         user = self.request.user
-        has_active_subscription = Subscription.objects.filter(
-            user=user,
-            created_at__gte=now()-timedelta(days=30),
-            expires_at__gte=now()
-        ).exists()
+        has_active_subscription = Subscription.is_user_currently_subscribed(user)
         if not has_active_subscription:
             if has_exceeded_analysis_limit(user):
                 return Response({}, status=status.HTTP_402_PAYMENT_REQUIRED)
@@ -106,11 +102,7 @@ class AudioAnalysisView(APIView):
         serializer.is_valid(raise_exception=True)
 
         user = self.request.user
-        has_active_subscription = Subscription.objects.filter(
-            user=user,
-            created_at__gte=now()-timedelta(days=30),
-            expires_at__gte=now()
-        ).exists()
+        has_active_subscription = Subscription.is_user_currently_subscribed(user)
         if not has_active_subscription:
             if has_exceeded_analysis_limit(user):
                 return Response({}, status=status.HTTP_402_PAYMENT_REQUIRED)
@@ -140,11 +132,7 @@ def text_analysis(request):
 
     try:
         user = request.user
-        has_active_subscription = Subscription.objects.filter(
-            user=user,
-            created_at__gte=now()-timedelta(days=30),
-            expires_at__gte=now()
-        ).exists()
+        has_active_subscription = Subscription.is_user_currently_subscribed(user)
         if not has_active_subscription:
             if has_exceeded_analysis_limit(user):
                 return Response({}, status=status.HTTP_402_PAYMENT_REQUIRED)
@@ -166,11 +154,7 @@ def url_analysis(request):
     url_analysis_serializer.is_valid(raise_exception=True)
 
     user = request.user
-    has_active_subscription = Subscription.objects.filter(
-        user=user,
-        created_at__gte=localtime(now()-timedelta(days=30)),
-        expires_at__lte=localtime(now())
-    ).exists()
+    has_active_subscription = Subscription.is_user_currently_subscribed(user)
     if not has_active_subscription:
         if has_exceeded_analysis_limit(user):
             return Response({}, status=status.HTTP_402_PAYMENT_REQUIRED)
