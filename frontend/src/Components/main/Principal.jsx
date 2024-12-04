@@ -128,6 +128,12 @@ const Principal = () => {
 
       setIsSubmitting(false);
       if (result) {
+        if (result.error && result.error.status === 402) {
+          setErrorMessage("Ya ha alcanzado la cantidad máxima de análisis por mes sin estar suscripto.");
+          setIsSubmitting(false);
+          return;
+        }
+
         console.log('Pasando a ArgumentAnalysis: ', result)
 
         navigate('/argument-analysis', { state: { analysisData: result.data.analysis } });
