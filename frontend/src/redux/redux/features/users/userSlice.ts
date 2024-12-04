@@ -22,7 +22,6 @@ export const UsersSlice = createSlice({
       localStorage.setItem('accessToken', action.payload.accessToken);
       localStorage.setItem('email', action.payload.user.email);
       localStorage.setItem('isSubscribed', String(action.payload.user.isSubscribed));
-      console.log('LOGIN REDUCER READING ACTION: ', action)
       state.email = action.payload.user.email;
       state.accessToken = action.payload.accessToken;
       state.isSubscribed = action.payload.user.isSubscribed;
@@ -32,12 +31,16 @@ export const UsersSlice = createSlice({
       state.email = null;
       state.accessToken = null;
       state.isSubscribed = null;
-    }
+    },
+    setUserAsSubscribed: (state) => {
+      localStorage.setItem('isSubscribed', String(true));
+      state.isSubscribed = true;
+    },
   }
 })
 
 export const selectUser = (state: RootState) => state.user;
 
-export const { setUser, clearUser } = UsersSlice.actions;
+export const { setUser, clearUser, setUserAsSubscribed } = UsersSlice.actions;
 
 export default UsersSlice.reducer;
