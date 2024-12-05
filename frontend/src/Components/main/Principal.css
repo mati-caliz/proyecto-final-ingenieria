@@ -12,6 +12,10 @@
     min-height: 100vh;
 }
 
+.subscription button {
+    margin-bottom: 25px;
+}
+
 .principal-content {
     background: rgba(255, 255, 255, 0.1) url('../assets/background.png') no-repeat center center;
     background-size: cover;
@@ -197,6 +201,10 @@
 .submit.disabled {
     background-color: gray;
     cursor: not-allowed;
+}
+
+.subscription.disabled .submit {
+    display: none;
 }
 
 .processing-message {

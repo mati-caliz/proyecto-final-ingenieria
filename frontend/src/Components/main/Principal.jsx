@@ -224,8 +224,7 @@ const Principal = () => {
             )}
           </div>
           <div className="options">
-            <p>suscripto: {isSubscribed}</p>
-            <div className={`"subscription ${isSubscribed ? "disabled" : ""}`}>
+            <div className={`subscription ${isSubscribed ? "disabled" : ""}`}>
               <button
                   className={`submit ${isSubscribing ? "disabled" : ""}`}
                   onClick={handleSubscribe}
@@ -235,7 +234,7 @@ const Principal = () => {
               </button>
               {subscriptionErrorMessage && <p className="error">{subscriptionErrorMessage}</p>}
             </div>
-            <h2 className="central-title">Elija qué desea analizar</h2>
+            <h2 className="central-title">Elija lo que desea analizar</h2>
             <div className="choices">
               <label>
                 <input
