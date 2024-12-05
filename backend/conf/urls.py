@@ -14,6 +14,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('pfi.apps.users.urls')),
     path('analyses/', include('pfi.apps.analyses.urls')),
+    path('subscriptions/', include('pfi.apps.subscriptions.urls')),
 ]
 
 if settings.ENABLE_SWAGGER:

@@ -9,6 +9,7 @@ interface GoogleLoginRequest {
 }
 
 interface User {
+    isSubscribed: any;
     email: string;
     name: string;
     profile_picture?: string;

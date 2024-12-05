@@ -1,9 +1,6 @@
 import os
 from datetime import timedelta
 from pathlib import Path
-from dotenv import load_dotenv
-
-load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -115,8 +112,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',  # JSON por defecto
-        'rest_framework.renderers.BrowsableAPIRenderer',  # Para la API navegable
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ),
 }
 

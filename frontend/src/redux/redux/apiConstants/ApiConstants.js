@@ -7,6 +7,9 @@ const ApiConstants = {
         video: 'analyses/video',
         youtube: 'analyses/url',
     },
+    subscriptionUrls: {
+        createSubscription: 'subscriptions/',
+    },
     userUrls: {
         root: 'users',
         login: 'users/login/',

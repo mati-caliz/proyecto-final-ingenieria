@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.db import models
+from django.utils.timezone import localtime, now
 
 from pfi.apps.users.models import User
 
@@ -10,3 +13,11 @@ class Subscription(models.Model):
 
     class Meta:
         verbose_name_plural = 'Subscriptions'
+
+    @classmethod
+    def is_user_currently_subscribed(cls, user):
+        return cls.objects.filter(
+            user=user,
+            created_at__gte=localtime(now() - timedelta(days=30)),
+            expires_at__lte=localtime(now())
+        ).exists()
