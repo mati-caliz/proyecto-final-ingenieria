@@ -1,6 +1,5 @@
 import json
 from datetime import timedelta
-
 from django.utils.timezone import now, localtime
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -19,7 +18,8 @@ from rest_framework.views import APIView
 from pfi.apps.subscriptions.models import Subscription
 
 client = OpenAI(
-    api_key="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")
+    api_key="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"
+)
 
 
 class VideoAnalysisView(APIView):
@@ -52,9 +52,6 @@ class VideoAnalysisView(APIView):
 
         user = self.request.user
         has_active_subscription = Subscription.is_user_currently_subscribed(user)
-        if not has_active_subscription:
-            if has_exceeded_analysis_limit(user):
-                return Response({}, status=status.HTTP_402_PAYMENT_REQUIRED)
 
         video_file = serializer.validated_data['video_file']
         try:
@@ -103,9 +100,6 @@ class AudioAnalysisView(APIView):
 
         user = self.request.user
         has_active_subscription = Subscription.is_user_currently_subscribed(user)
-        if not has_active_subscription:
-            if has_exceeded_analysis_limit(user):
-                return Response({}, status=status.HTTP_402_PAYMENT_REQUIRED)
 
         audio_file = serializer.validated_data['audio_file']
         try:
@@ -130,13 +124,10 @@ def text_analysis(request):
     text_analysis_serializer = TextAnalysisSerializer(data=request.data)
     text_analysis_serializer.is_valid(raise_exception=True)
 
-    try:
-        user = request.user
-        has_active_subscription = Subscription.is_user_currently_subscribed(user)
-        if not has_active_subscription:
-            if has_exceeded_analysis_limit(user):
-                return Response({}, status=status.HTTP_402_PAYMENT_REQUIRED)
+    user = request.user
+    has_active_subscription = Subscription.is_user_currently_subscribed(user)
 
+    try:
         analysis = sendPrompt(text_analysis_serializer.data['text'], has_active_subscription)
         newAnalysis = Analysis.objects.create(is_premium_request=False, requester=user, result=analysis)
         newAnalysis.save()
@@ -155,9 +146,6 @@ def url_analysis(request):
 
     user = request.user
     has_active_subscription = Subscription.is_user_currently_subscribed(user)
-    if not has_active_subscription:
-        if has_exceeded_analysis_limit(user):
-            return Response({}, status=status.HTTP_402_PAYMENT_REQUIRED)
 
     try:
         video_file = YouTubeUrlToVideoConverter.convert(request.data.get('text'))
@@ -180,7 +168,6 @@ def sendPrompt(text: str, has_active_suscription):
     text = get_limited_string(text, has_active_suscription)
     response = client.chat.completions.create(
         model="gpt-4o",
-        # model="o1-preview",
         response_format={"type": "json_object"},
         messages=[{
             "role": "user",
@@ -217,19 +204,19 @@ def sendPrompt(text: str, has_active_suscription):
 
     3. No modifiques el contenido de las citas.  
        Cita las afirmaciones completas y sin recortes. No uses elipsis ni ajustes.
-       
+
     4. NO USES comillas dobles. Si es necesario, debes escaparlas, porque tu respuesta será procesada con json.loads() en Python 
     y pueden causar errores.    
-       
+
     5. No olvidar agregar las fuentes al final del texto que contiene tu análisis de cada afirmación leída. Es muy importante.
     Este análisis que armaste se usará para ser mostrado en una página web que mostrará, para cada argumento, 
     cita del texto -> tu análisis (que debe incluir las fuentes) -> veredicto.
     No olvides las fuentes. No olvides las fuentes. No olvides las fuentes. No olvides las fuentes. No olvides las fuentes. 
-    
+
     6. ¿Chequeaste que estén las fuentes? En serio, las fuentes deben estar. Debe estar incluido en el análisis de cada 
     argumento el listado de fuentes que usaste.  
-    
-    6. Chequeá de nuevo que estén las fuentes dentro del texto de tu análisis. Deben ser URLs. Esto no debe afectar al 
+
+    7. Chequeá de nuevo que estén las fuentes dentro del texto de tu análisis. Deben ser URLs. Esto no debe afectar al 
     campo que contiene el valor del veredicto (VERDADERO, FALSO, POLÉMICO).  
 
     El texto a analizar es el siguiente: {text} '''
@@ -264,15 +251,6 @@ def latest_analyses(request):
 
 def get_limited_string(content: str, has_active_subscription: bool) -> str:
     limit = 5000 if has_active_subscription else 2000
-    return content[:limit]
-
-
-def has_exceeded_analysis_limit(user) -> bool:
-    thirty_days_ago = now() - timedelta(days=30)
-
-    recent_analysis_count = Analysis.objects.filter(
-        requester=user,
-        created_at__gte=thirty_days_ago
-    ).count()
-
-    return recent_analysis_count >= 3
+    words = content.split()
+    limited_words = words[:limit]
+    return ' '.join(limited_words)
