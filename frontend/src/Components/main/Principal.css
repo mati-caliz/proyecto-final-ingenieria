@@ -89,6 +89,10 @@
     color: white;
 }
 
+.subscription {
+    margin-bottom: 30px;
+}
+
 .choices {
     display: flex;
     justify-content: center;

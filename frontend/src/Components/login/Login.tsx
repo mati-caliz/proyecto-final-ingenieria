@@ -30,7 +30,7 @@ const Login = () => {
                 if (loginResult.access) {
                     const loggedUser = {
                         accessToken: loginResult.access,
-                        user: { email: decoded.email },
+                        user: { email: decoded.email, isSubscribed: loginResult.user.isSubscribed },
                     };
                     dispatch(setUser(loggedUser));
                     console.log('User set in Redux:', loggedUser);

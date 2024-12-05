@@ -5,7 +5,7 @@ import { RootState } from '../../store';
 import { TextAnalysisRequest } from './RequestsTypes';
 
 export const analysisApiSlice = createApi({
-  reducerPath: 'transactionApi',
+  reducerPath: 'analysisApi',
   baseQuery: fetchBaseQuery({
     baseUrl: apiConstants.baseUrl,
     prepareHeaders: (headers, { getState }) => {

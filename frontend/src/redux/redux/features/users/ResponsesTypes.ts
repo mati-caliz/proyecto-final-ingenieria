@@ -5,4 +5,5 @@ export interface LoggedUser {
 
 interface User {
     email: string;
+    isSubscribed: boolean;
 }

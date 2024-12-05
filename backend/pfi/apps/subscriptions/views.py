@@ -13,11 +13,7 @@ from .serializers import SubscriptionSerializer
 def create_subscription(request):
     try:
         user = request.user
-        if Subscription.objects.filter(
-            user=user,
-            created_at__lte=now(),
-            expires_at__gte=now()
-        ).exists():
+        if Subscription.is_user_currently_subscribed(user):
             return Response(
                 {"message": "El usuario ya tiene una suscripción activa."},
                 status=status.HTTP_400_BAD_REQUEST

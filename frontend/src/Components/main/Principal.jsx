@@ -7,23 +7,37 @@ import {
   useGetPreviousAnalysesMutation,
   useTextAnalysisMutation,
   useAudioAnalysisMutation,
-  useVideoAnalysisMutation, useYoutubeAnalysisMutation,
+  useVideoAnalysisMutation,
+  useYoutubeAnalysisMutation,
 } from '../../redux/redux/features/analyses/analysisApiSlice';
+import {
+  useCreateSubscriptionMutation,
+} from '../../redux/redux/features/subscriptions/subscriptionApiSlice'
+import {useAppDispatch, useAppSelector} from "../../redux/redux/hooks";
+import { setUserAsSubscribed } from '../../redux/redux/features/users/userSlice';
 
 const Principal = () => {
   const [inputType, setInputType] = useState("text");
   const [inputValue, setInputValue] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [subscriptionErrorMessage, setSubscriptionErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
   const [getPreviousAnalyses] = useGetPreviousAnalysesMutation();
   const [requestTextAnalysis] = useTextAnalysisMutation();
   const [requestAudioAnalysis] = useAudioAnalysisMutation();
   const [requestVideoAnalysis] = useVideoAnalysisMutation();
   const [requestYouTubeAnalysis] = useYoutubeAnalysisMutation();
+  const [createSubscription] = useCreateSubscriptionMutation();
   const [previousAnalyses, setPreviousAnalyses] = useState([]);
   const [loadingPreviousAnalyses, setLoadingPreviousAnalyses] = useState(true);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const isSubscribed = useAppSelector((state) => {
+    console.log('isSubscribed in Principal.jsx:', state.user.isSubscribed);
+    return state.user.isSubscribed;
+  });
 
   useEffect(() => {
     const fetchAnalyses = async () => {
@@ -128,6 +142,12 @@ const Principal = () => {
 
       setIsSubmitting(false);
       if (result) {
+        if (result.error && result.error.status === 402) {
+          setErrorMessage("Ya ha alcanzado la cantidad máxima de análisis por mes sin estar suscripto.");
+          setIsSubmitting(false);
+          return;
+        }
+
         console.log('Pasando a ArgumentAnalysis: ', result)
 
         navigate('/argument-analysis', { state: { analysisData: result.data.analysis } });
@@ -136,6 +156,34 @@ const Principal = () => {
       console.error(`Error requesting analysis of type ${inputType}: `, e);
       setErrorMessage("Error durante el envío. Por favor, intente nuevamente.");
       setIsSubmitting(false);
+    }
+  };
+
+  const handleSubscribe = async () => {
+    setIsSubscribing(true);
+
+    try {
+      let result = await createSubscription({});
+
+      setIsSubscribing(false);
+      if (result) {
+        if (result.error) {
+          if (result.error.status === 400) {
+            setSubscriptionErrorMessage("Ya se encuentra suscripto.");
+            setIsSubscribing(false);
+            return;
+          }
+          throw result.error;
+        }
+
+        dispatch(setUserAsSubscribed());
+        setIsSubscribing(false);
+        setSubscriptionErrorMessage("");
+      }
+    } catch (e) {
+      console.error(`Error subscribing user: `, e);
+      setSubscriptionErrorMessage("Hubo un error creando la suscripción. Por favor, intente nuevamente.");
+      setIsSubscribing(false);
     }
   };
 
@@ -176,99 +224,110 @@ const Principal = () => {
             )}
           </div>
           <div className="options">
+            <p>suscripto: {isSubscribed}</p>
+            <div className={`"subscription ${isSubscribed ? "disabled" : ""}`}>
+              <button
+                  className={`submit ${isSubscribing ? "disabled" : ""}`}
+                  onClick={handleSubscribe}
+                  disabled={isSubscribing}
+              >
+                {isSubscribing ? "Creando subscripción..." : "Subscribirse a Argucheck"}
+              </button>
+              {subscriptionErrorMessage && <p className="error">{subscriptionErrorMessage}</p>}
+            </div>
             <h2 className="central-title">Elija qué desea analizar</h2>
             <div className="choices">
               <label>
                 <input
-                  type="radio"
-                  name="format"
-                  value="text"
-                  checked={inputType === "text"}
-                  onChange={handleOptionChange}
+                    type="radio"
+                    name="format"
+                    value="text"
+                    checked={inputType === "text"}
+                    onChange={handleOptionChange}
                 />
                 Texto
               </label>
               <label>
                 <input
-                  type="radio"
-                  name="format"
-                  value="audio"
-                  checked={inputType === "audio"}
-                  onChange={handleOptionChange}
+                    type="radio"
+                    name="format"
+                    value="audio"
+                    checked={inputType === "audio"}
+                    onChange={handleOptionChange}
                 />
                 Audio
               </label>
               <label>
                 <input
-                  type="radio"
-                  name="format"
-                  value="video"
-                  checked={inputType === "video"}
-                  onChange={handleOptionChange}
+                    type="radio"
+                    name="format"
+                    value="video"
+                    checked={inputType === "video"}
+                    onChange={handleOptionChange}
                 />
                 Video
               </label>
               <label>
                 <input
-                  type="radio"
-                  name="format"
-                  value="youtube"
-                  checked={inputType === "youtube"}
-                  onChange={handleOptionChange}
+                    type="radio"
+                    name="format"
+                    value="youtube"
+                    checked={inputType === "youtube"}
+                    onChange={handleOptionChange}
                 />
                 YouTube
               </label>
             </div>
             <div className="input-container">
               {inputType === "text" && (
-                <textarea
-                  id={"textarea-input"}
-                  className="textarea-input"
-                  placeholder={"Escriba aquí el texto a analizar"}
-                  value={inputValue}
-                  onChange={handleInputChange}
-                ></textarea>
+                  <textarea
+                      id={"textarea-input"}
+                      className="textarea-input"
+                      placeholder={"Escriba aquí el texto a analizar"}
+                      value={inputValue}
+                      onChange={handleInputChange}
+                  ></textarea>
               )}
               {(inputType === "audio" || inputType === "video") && (
-                <input
-                  type="file"
-                  id={"file-input"}
-                  accept={inputType === "audio" ? ".mp3,.wav" : ".mp4,.avi"}
-                  onChange={handleInputChange}
-                />
+                  <input
+                      type="file"
+                      id={"file-input"}
+                      accept={inputType === "audio" ? ".mp3,.wav" : ".mp4,.avi"}
+                      onChange={handleInputChange}
+                  />
               )}
               {inputType === "youtube" && (
-                <input
-                  id={"youtube-input"}
-                  className="url-input"
-                  type="text"
-                  placeholder={"Ingrese la URL de YouTube"}
-                  value={inputValue}
-                  onChange={handleInputChange}
-                />
+                  <input
+                      id={"youtube-input"}
+                      className="url-input"
+                      type="text"
+                      placeholder={"Ingrese la URL de YouTube"}
+                      value={inputValue}
+                      onChange={handleInputChange}
+                  />
               )}
             </div>
             {errorMessage && <p className="error">{errorMessage}</p>}
             <button
-              className={`submit ${isSubmitting ? "disabled" : ""}`}
-              onClick={handleSubmit}
-              disabled={isSubmitting}
+                className={`submit ${isSubmitting ? "disabled" : ""}`}
+                onClick={handleSubmit}
+                disabled={isSubmitting}
             >
               {isSubmitting ? "Enviando..." : "Enviar"}
             </button>
             {isSubmitting && (
-              <p className="processing-message">
-                Estamos procesando la información enviada. Por favor, espere hasta que el análisis sea realizado.
-              </p>
+                <p className="processing-message">
+                  Estamos procesando la información enviada. Por favor, espere hasta que el análisis sea realizado.
+                </p>
             )}
           </div>
           <div className="right-section">
             <h2 className="section-title">Análisis Anteriores</h2>
             {loadingPreviousAnalyses ? (
-              <p>Cargando...</p>
+                <p>Cargando...</p>
             ) : (
-              right.length > 0 ? (
-                right.map((analysis, index) => (
+                right.length > 0 ? (
+                    right.map((analysis, index) => (
                   <Card
                     key={index}
                     text={<a className='anchor-like' onClick={() => handleCardClick(analysis)}>{JSON.parse(analysis.analysis)['title']}</a>}
