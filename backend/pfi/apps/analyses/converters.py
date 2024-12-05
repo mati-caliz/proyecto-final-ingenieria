@@ -63,11 +63,8 @@ class YouTubeUrlToVideoConverter:
 class VideoToAudioConverter:
     @staticmethod
     def convert(temp_video_file: TemporaryUploadedFile) -> InMemoryUploadedFile:
-        try:
-            video_clip = VideoFileClip(temp_video_file.temporary_file_path())
-            audio_clip = video_clip.audio
-        finally:
-            os.remove(temp_video_file.temporary_file_path())
+        video_clip = VideoFileClip(temp_video_file.temporary_file_path())
+        audio_clip = video_clip.audio
 
         with tempfile.NamedTemporaryFile(delete=False, suffix=".aac") as temp_audio_file:
             temp_audio_file_path = temp_audio_file.name
@@ -93,7 +90,6 @@ class VideoToAudioConverter:
             charset=None,
             content_type_extra=None
         )
-
         return audio_file
 
 
