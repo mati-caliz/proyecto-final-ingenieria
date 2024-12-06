@@ -1,6 +1,6 @@
 from openai import OpenAI
 
-client = OpenAI(api_key="sk-proj-ISd2YDCvCl5KLGV8juc9T3BlbkFJJCwEgXlcJuI81GZlVjfg")
+client = OpenAI(api_key="")
 
 def fake_news_clasificator_gpt4(prompt:str):
     response = client.chat.completions.create(

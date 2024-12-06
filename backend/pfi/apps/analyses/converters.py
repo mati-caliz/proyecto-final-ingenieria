@@ -1,14 +1,20 @@
 import io
-import os
 import tempfile
-
+from dotenv import load_dotenv
+import os
 import assemblyai as aai
 import yt_dlp
 from django.core.files.uploadedfile import TemporaryUploadedFile, InMemoryUploadedFile
 from moviepy.editor import VideoFileClip
 from yt_dlp.postprocessor.common import PostProcessor
 
-aai.settings.api_key = "521e445faf5f4dce9b5fdfea55b1c50a"
+
+dotenv_path = os.path.join(os.path.dirname(__file__), "../../../.env")
+
+load_dotenv(dotenv_path=dotenv_path)
+
+aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
+
 
 
 class BufferPostProcessor(PostProcessor):

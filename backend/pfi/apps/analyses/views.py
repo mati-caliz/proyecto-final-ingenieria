@@ -1,26 +1,27 @@
 import json
-from datetime import timedelta
-from django.utils.timezone import now, localtime
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from openai import OpenAI
 from pfi.apps.analyses.converters import AudioToTextConverter, VideoToAudioConverter, YouTubeUrlToVideoConverter
 from pfi.apps.analyses.models import Analysis
-from pfi.apps.analyses.serializers import AudioAnalysisSerializer, TextAnalysisSerializer, VideoAnalysisSerializer, \
-    UrlAnalysisSerializer
+from pfi.apps.analyses.serializers import AudioAnalysisSerializer, TextAnalysisSerializer, VideoAnalysisSerializer, UrlAnalysisSerializer
 from rest_framework import status
+from dotenv import load_dotenv
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+import os
 from pfi.apps.subscriptions.models import Subscription
 
-client = OpenAI(
-    api_key="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"
-)
+dotenv_path = os.path.join(os.path.dirname(__file__), "../../../.env")
 
+load_dotenv(dotenv_path=dotenv_path)
+
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY")
+)
 
 class VideoAnalysisView(APIView):
     parser_classes = [MultiPartParser]
@@ -46,6 +47,7 @@ class VideoAnalysisView(APIView):
             400: "Invalid input",
         }
     )
+
     def post(self, request):
         serializer = VideoAnalysisSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -94,6 +96,7 @@ class AudioAnalysisView(APIView):
             400: "Invalid input",
         }
     )
+
     def post(self, request):
         serializer = AudioAnalysisSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

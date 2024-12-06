@@ -19,6 +19,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "prestart": "node copy-env.js",
+    "prebuild": "node copy-env.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -43,6 +45,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "dotenv-cli": "^7.4.4"
   }
 }

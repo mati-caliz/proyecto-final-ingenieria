@@ -1,10 +1,16 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-^#8+0_2t!lvckc2==d#s#+7x2+v1ryq!-k_8fg&434s(577h0m'
+dotenv_path = os.path.join(os.path.dirname(__file__), "../../../.env")
+
+load_dotenv(dotenv_path=dotenv_path)
+
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 DEBUG = True
 
@@ -40,7 +46,7 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-GOOGLE_CLIENT_ID="868264655617-qpks2tnvus1p481563ovn6sh10k3cffb.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 
 APPEND_SLASH = False
 
