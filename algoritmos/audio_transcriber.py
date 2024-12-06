@@ -1,8 +1,8 @@
 import assemblyai as aai
 
-aai.settings.api_key = "ffbcd19f906b4c688060d677d7ff18e9"
+aai.settings.api_key = ""
 
-FILE_URL = r"/home/matiascaliz/Escritorio/PFI/proyecto-final-ingenieria//algoritmos//audio.wav"
+FILE_URL = r""
 
 def audio_transcriber(url:str=FILE_URL):
     config = aai.TranscriptionConfig(language_code="es")

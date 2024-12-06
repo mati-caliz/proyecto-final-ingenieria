@@ -45,5 +45,5 @@ def video2audio(url:str) -> None:
 
 
 if __name__ == "__main__":
-    #video2audio("C://Users//Matias Caliz//Desktop//proyecto-final-ingenieria//algoritmos//Recorder_23062024_150605.mp4")
-    video2audio("https://www.youtube.com/watch?v=jySRdtIemLU")
+    #video2audio("https://www.youtube.com/watch?v=jySRdtIemLU")
+    video2audio("")
