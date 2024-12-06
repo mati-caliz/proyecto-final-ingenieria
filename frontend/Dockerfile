@@ -7,6 +7,9 @@ ARG REACT_APP_API_URL
 # Establecer la variable de entorno
 ENV REACT_APP_API_URL=$REACT_APP_API_URL
 
+ARG REACT_APP_GOOGLE_CLIENT_ID
+ENV REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID
+
 # Establecer el directorio de trabajo dentro del contenedor
 WORKDIR /app
 

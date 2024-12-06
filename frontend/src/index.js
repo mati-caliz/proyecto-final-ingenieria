@@ -7,7 +7,7 @@ import { store } from './redux/redux/store';
 import { Provider } from 'react-redux';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+const clientId = process.env.GOOGLE_CLIENT_ID;
 const rootElement = document.getElementById('root');
 
 

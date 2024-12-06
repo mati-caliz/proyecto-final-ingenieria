@@ -1,6 +1,5 @@
 import io
 import tempfile
-from dotenv import load_dotenv
 import os
 import assemblyai as aai
 import yt_dlp
@@ -9,12 +8,7 @@ from moviepy.editor import VideoFileClip
 from yt_dlp.postprocessor.common import PostProcessor
 
 
-dotenv_path = os.path.join(os.path.dirname(__file__), "../../../.env")
-
-load_dotenv(dotenv_path=dotenv_path)
-
-aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
-
+aai.settings.api_key = os.environ.get("ASSEMBLYAI_API_KEY")
 
 
 class BufferPostProcessor(PostProcessor):
