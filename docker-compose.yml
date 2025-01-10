@@ -35,7 +35,7 @@ services:
     build:
       context: ./frontend
       args:
-        REACT_APP_API_URL: "http://localhost:8000"
+        REACT_APP_API_URL: "http://argucheck.com.ar/api"
         GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
     container_name: frontend
     volumes:
