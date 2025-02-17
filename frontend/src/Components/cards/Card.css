@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+.fact-check-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+@media (min-width: 1280px) {
+    .fact-check-card {
+        width: 60%;
+        margin-left: auto;
+        margin-right: auto;
+
+    }
+}
+
+.fact-check-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    font-family: 'roboto', sans-serif;
+}
+
+.fact-check-card p {
+    font-size: 110%;
+    margin: 15px;
+    padding-bottom: 10px;
+}
+
+.result {
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.result.verdadero {
+    color: green;
+}
+
+.result.falso {
+    color: red;
+}
+
+.result.polemico {
+    color: orange;
+}

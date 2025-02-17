@@ -1,0 +1,8 @@
+Device name	mati-desktop
+Processor	11th Gen Intel(R) Core(TM) i5-11400F @ 2.60GHz   2.59 GHz
+Installed RAM	48.0 GB (47.9 GB usable)
+Device ID	3BAADFCF-95C4-4659-89FD-C4BE6F2FA668
+Product ID	00331-10000-00001-AA355
+System type	64-bit operating system, x64-based processor
+Pen and touch	No pen or touch input is available for this display
+GPU NVIDIA GeForce RTX 3060
